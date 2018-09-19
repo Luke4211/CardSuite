@@ -12,7 +12,8 @@ public class BlackJackBasicStrategy {
 	 * best move depending on the player's hand and
 	 * dealer's top card. Each row represents
 	 * the player's hand, and columns represent the
-	 * dealer's card. 
+	 * dealer's card. Tables created based off
+	 * information found on www.wizardofodds.com
 	 * ********************************************
 	 *                    Key                     *
 	 * h = hit                                    *                   
@@ -69,6 +70,11 @@ public class BlackJackBasicStrategy {
 		
 	}
 	
+	/*
+	 * getDecision() returns the optimal decision 
+	 * based on the player's hand and dealer's top
+	 * card
+	 */
 	public String getDecision(Deck deck, Card card) {
 		boolean soft = this.isSoft(deck);
 		int pts = this.handPts(deck);
@@ -90,7 +96,9 @@ public class BlackJackBasicStrategy {
 		}
 		
 	}
-	
+	/*
+	 * handPts() calculates the point value of the passed hand
+	 */
 	public int handPts(Deck hand) {
 		int sum = 0;
 		ArrayList<Card> aces = new ArrayList<Card>();
