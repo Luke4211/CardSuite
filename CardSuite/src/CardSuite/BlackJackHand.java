@@ -61,12 +61,8 @@ public class BlackJackHand {
 					boolean isStanding = this.players[i].getStanding(j+1);
 					
 					if(!isBusted && !isStanding) {
-						String input = "";
-						while(!input.equals("h") && !input.equals("s") ) {
-							System.out.print("Player " + (i+1) + ", would you like to hit or stand on deck " + (j+1) + "? h/s ");
-							input = this.scnr.next();
-						}
-						if(input.equals("h")) {
+						boolean playerHit = this.players[i].promptToHit(i+1, j+1);
+						if(playerHit) {
 							this.hit(i, j+1);
 							if(this.bust(players[i].getDeck(j+1))) {
 								this.players[i].bustPlayer(j+1);
@@ -82,7 +78,7 @@ public class BlackJackHand {
 								
 							}
 							this.printState();
-						} else if(input.equals("s")) {
+						} else {
 							this.players[i].setStand(true, j+1);
 						}
 					}

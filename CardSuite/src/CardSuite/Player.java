@@ -1,6 +1,9 @@
 package CardSuite;
 
+import java.util.Scanner;
+
 public class Player {
+	Scanner scnr = new Scanner(System.in);
 	private Deck deck1;
 	private Deck deck2;
 	private Card doubleCard1;
@@ -37,6 +40,7 @@ public class Player {
 		this.insurance = 0;
 		
 	}
+	
 	
 	public void addCard(int deck, Card card) {
 		if(deck == 1) {
@@ -136,6 +140,27 @@ public class Player {
 		
 		
 		
+	}
+	
+	public boolean promptToHit(int playerNum, int deckNum) {
+		String input = "";
+		while(!input.equals("h") && !input.equals("s") ) {
+			System.out.print("Player " + (playerNum) + ", would you like to hit or stand on deck " + (deckNum) + "? h/s ");
+			input = this.scnr.next();
+		}
+		
+		if(input.equals("h")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
+	
+	public void insure(int amount) {
+		this.insurance = amount;
+		this.money -= amount;
 	}
 	
 	public boolean getStanding(int deck) {
