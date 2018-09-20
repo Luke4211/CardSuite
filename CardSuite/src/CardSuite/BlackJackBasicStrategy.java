@@ -12,8 +12,8 @@ public class BlackJackBasicStrategy {
 	 * best move depending on the player's hand and
 	 * dealer's top card. Each row represents
 	 * the player's hand, and columns represent the
-	 * dealer's card. Tables created based off
-	 * information found on www.wizardofodds.com
+	 * dealer's card. Tables created based off information from
+	 * https://wizardofodds.com/games/blackjack/strategy/1-deck/
 	 * ********************************************
 	 *                    Key                     *
 	 * h = hit                                    *                   
@@ -28,11 +28,11 @@ public class BlackJackBasicStrategy {
 	
 	private final String[][] hardDecisionTable = {
     /* Hands:             2     3     4     5     6     7     8     9     10    A  */
-	/*4-7 */			{"h",  "h",  "h",  "h",  "h",  "h",  "h",  "h",  "h",  "h" },
-	/* 8  */			{"h",  "h",  "h",  "dh", "dh", "h",  "h",  "h",  "h",  "h" },
-	/* 9  */			{"dh", "dh", "dh", "dh", "dh", "h",  "h",  "h",  "h",  "h" },
-	/* 10 */			{"dh", "dh", "dh", "dh", "dh", "dh", "dh", "dh", "h",  "h" },
-	/* 11 */			{"dh", "dh", "dh", "dh", "dh", "dh", "dh", "dh", "dh", "dh"},
+	/*4-7 */			{"h",  "h",  "h",  "h",  "h",  "h",  "h",  "h",  "h",  "h"  },
+	/* 8  */			{"h",  "h",  "h",  "dh", "dh", "h",  "h",  "h",  "h",  "h"  },
+	/* 9  */			{"dh", "dh", "dh", "dh", "dh", "h",  "h",  "h",  "h",  "h"  },
+	/* 10 */			{"dh", "dh", "dh", "dh", "dh", "dh", "dh", "dh", "h",  "h"  },
+	/* 11 */			{"dh", "dh", "dh", "dh", "dh", "dh", "dh", "dh", "dh", "dh" },
 	/* 12 */			{"h",  "h",  "s",  "s",  "s",   "h",  "h",  "h",  "h",  "h" },
 	/* 13 */			{"s",  "s",  "s",  "s",  "s",   "h",  "h",  "h",  "h",  "h" },
 	/* 14 */			{"s",  "s",  "s",  "s",  "s",   "h",  "h",  "h",  "h",  "h" },

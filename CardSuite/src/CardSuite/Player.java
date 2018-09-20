@@ -142,7 +142,7 @@ public class Player {
 		
 	}
 	
-	public boolean promptToHit(int playerNum, int deckNum) {
+	public boolean promptToHit(int playerNum, int deckNum, Card dealerCard) {
 		String input = "";
 		while(!input.equals("h") && !input.equals("s") ) {
 			System.out.print("Player " + (playerNum) + ", would you like to hit or stand on deck " + (deckNum) + "? h/s ");
@@ -156,7 +156,35 @@ public class Player {
 		}
 	}
 	
+	public boolean promptToSplit(int playerNum, int deck, Card dealerCard) {
+		String split;
+		System.out.println("Player " + playerNum + " would you like to split? y/n");
+		split = scnr.nextLine();
+		while(!split.equals("y") && !split.equals("n")) {
+			System.out.println("Player " + playerNum + " would you like to split? y/n");
+			split = scnr.nextLine();
+		}
+		if(split.equals("y")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
+	public boolean promptToDouble(int playerNum, int deck, Card dealerCard) {
+		String input = "";
+		while(!input.equals("y") && !input.equals("n")) {
+			System.out.println("Player " + playerNum + ", would you like to double down? on deck " + deck + "? y/n");
+			input = scnr.nextLine();
+
+		}
+		
+		if(input.equals("y")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	public void insure(int amount) {
 		this.insurance = amount;

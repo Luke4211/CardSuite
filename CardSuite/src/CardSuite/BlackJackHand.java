@@ -50,49 +50,69 @@ public class BlackJackHand {
 	 */
 	public void hand() {
 		initalize();
-		while(!this.handOver) {
-			if(this.allFinished()) {
-				this.handOver = true;
-			}
-			for(int i = 0; i<this.numPlayers; i++) {
-				int deckNum = this.players[i].getNumDecks();
-				for(int j = 0; j<deckNum; j++) {
-					boolean isBusted = this.bust(players[i].getDeck(j+1));
-					boolean isStanding = this.players[i].getStanding(j+1);
+
+		for(int i = 0; i<this.numPlayers; i++) {
+			int deckNum = this.players[i].getNumDecks();
+			for(int j = 0; j<deckNum; j++) {
+				boolean isBusted = this.bust(players[i].getDeck(j+1));
+				boolean isStanding = this.players[i].getStanding(j+1);
+				
+				if(this.canSplit(players[i].getDeck(1))) {
+					boolean split = this.players[i].promptToSplit(i+1, j+1, this.dealer.getCard(0));
 					
-					if(!isBusted && !isStanding) {
-						boolean playerHit = this.players[i].promptToHit(i+1, j+1);
-						if(playerHit) {
-							this.hit(i, j+1);
-							if(this.bust(players[i].getDeck(j+1))) {
-								this.players[i].bustPlayer(j+1);
-								if(this.allFinished()) {
-									this.handOver = true;
-								}
-								this.printState();
-								String pause = "";
-								while(pause.equals("")) {
-									System.out.println("You've busted! Hit any key then enter to continue...");
-									pause = scnr.next();
-								}
-								
-							}
-							this.printState();
-						} else {
-							this.players[i].setStand(true, j+1);
-						}
+					if(split) {
+						Card[] cards = new Card[2];
+						cards[0] = this.house.top();
+						cards[1] = this.house.top();
+					
+						this.players[i].split(cards);
+						this.printState();
 					}
 				}
+				Boolean isDoubled = false;
+				boolean toDouble = this.players[i].promptToDouble(i+1, j+1, this.dealer.getCard(0));
+
+				if(toDouble) {
+					Card card = this.house.top();
+					this.players[i].doubleDown(card, j+1);
+					isDoubled = true;
+
+				}
+
+				
+				while(!isBusted && !isStanding && !isDoubled) {
+					
+					boolean playerHit = this.players[i].promptToHit(i+1, j+1, this.dealer.getCard(0));
+					if(playerHit) {
+						this.hit(i, j+1);
+						if(this.bust(players[i].getDeck(j+1))) {
+							this.players[i].bustPlayer(j+1);
+							this.printState();
+							String pause = "";
+							while(pause.equals("")) {
+								System.out.println("You've busted! Hit any key then enter to continue...");
+								pause = scnr.next();
+							}
+						}
+						this.printState();
+					} else {
+						this.players[i].setStand(true, j+1);
+					}
+					isBusted = this.bust(players[i].getDeck(j+1));
+					isStanding = this.players[i].getStanding(j+1);
+				}
+				
 			}
-			
-			this.showDoubles();
-			this.hitUntil17();
 		}
-		
+
+		this.showDoubles();
+		this.hitUntil17();
+
+
 		this.cleanUp();
 		this.printState();
 	}
-	
+
 	
 	/*
 	 * getHouse() returns the house deck.
@@ -156,40 +176,7 @@ public class BlackJackHand {
 		
 		this.printState();
 		
-		for(int i = 0; i < this.numPlayers; i++) {
-			if(this.canSplit(players[i].getDeck(1))) {
-				String split;
-				System.out.println("Would you like to split? y/n");
-				split = scnr.nextLine();
-				while(!split.equals("y") && !split.equals("n")) {
-					System.out.println("Would you like to split? y/n");
-					split = scnr.nextLine();
-				}
-				if(split.equals("y")) {
-					Card[] cards = new Card[2];
-					cards[0] = this.house.top();
-					cards[1] = this.house.top();
-				
-					this.players[i].split(cards);
-					this.printState();
-				}
-			}
-			for(int j = 0; j < this.players[i].getNumDecks(); j++) {
-				input = "";
-				while(!input.equals("y") && !input.equals("n")) {
-					System.out.println("Players " + (i+1) + ", would you like to double down? y/n");
-					input = scnr.nextLine();
-					
-				}
-				
-				if(input.equals("y")) {
-					Card card = this.house.top();
-					this.players[i].doubleDown(card, j+1);
-					
-				}
-				
-			}
-		}
+		
 		
 		
 		

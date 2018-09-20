@@ -6,13 +6,13 @@ public class main {
 	
 	
 	public static void main(String[] args) {
-		//BlackJack game = new BlackJack(250000000,250000, 1);
+		BlackJack game = new BlackJack(250000000,250000, 2);
 		BlackJackBasicStrategy bs = new BlackJackBasicStrategy();
 		Card dealerCard = new Card(6, "d");
 		Deck deck = new Deck(true);
-		Card card = new Card(1, "d");
+		Card card = new Card(4, "d");
 		deck.addCard(card);
-		card = new Card(6, "d");
+		card = new Card(4, "d");
 		deck.addCard(card);
 		
 		System.out.println(bs.getDecision(deck, dealerCard));
