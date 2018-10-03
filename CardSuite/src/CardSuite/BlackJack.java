@@ -2,36 +2,45 @@ package CardSuite;
 import java.util.ArrayList;
 import java.util.Scanner;
 public class BlackJack {
-	private boolean run;
-	private int houseMoney;
-	private int playerMoney;
-	private int numPlayers;
-	private int handCount;
-	private Player[] players;
-	private Deck house;
-	private Deck discard;
-	private Scanner scnr;
+	protected boolean run;
+	protected long houseMoney;
+	protected long playerMoney;
+	protected int numPlayers;
+	protected int handCount;
+	protected int numHands;
+	protected int minBet;
+	protected int hiLo;
+	protected Player[] players;
+	protected Deck house;
+	protected Deck discard;
+	protected Scanner scnr;
+	protected boolean isSim;
 	
-	public BlackJack(int dealerMoney, int playerMoney, int numPlayers) {
+	
+	public BlackJack(long dealerMoney, long playerMoney, int numPlayers, int numHands, int minBet) {
 		this.run = true;
 		this.house = new Deck(false);
 		this.discard = new Deck(true);
 		this.houseMoney = dealerMoney;
 		this.playerMoney = playerMoney;
+		this.numHands = numHands;
+		this.minBet = minBet;
 		this.scnr = new Scanner(System.in);
 		this.numPlayers = numPlayers;
 		this.handCount = 0;
 		this.house.shuffle();
 		this.players = new Player[this.numPlayers];
-		for(int i = 0; i < this.numPlayers; i++) {
-			Player newPlayer = new Player(i+1, this.playerMoney);
-			this.players[i] = newPlayer;
-		}
-		game();
+		this.hiLo = 0;
+		this.addPlayers();
+		
+		
+		
 	}
 	
+	
+	
 	public Object[] getInfo() {
-		Object[] rtn = new Object[8];
+		Object[] rtn = new Object[10];
 		rtn[0] = this.house;
 		rtn[1] = this.houseMoney;
 		rtn[2] = this.playerMoney;
@@ -39,6 +48,8 @@ public class BlackJack {
 		rtn[4] = this.numPlayers;
 		rtn[5] = this.handCount;
 		rtn[6] = this.players;
+		rtn[7] = this.hiLo;
+		rtn[8] = this.minBet;
 		return rtn;
 	}
 	
@@ -50,25 +61,34 @@ public class BlackJack {
 	
 	public void game() {
 		while(this.run) {
-			
 			BlackJackHand hand = new BlackJackHand(this.getInfo()); 
-		
 			hand.hand();
 			this.handCount++;
-			System.out.println("Would you like to play another hand? y/n Count: " + this.handCount);
-			String another = this.scnr.next();
-			if(another.equals("n")) {
-				this.run = false;
-				System.out.println("Thanks for playing!");
-			} else {
-				this.setDeck(hand.getHouse());
-				int money = hand.getMoney();
-				this.houseMoney = money;
-				this.discard = hand.getDiscard();
-				this.players = hand.getPlayers();
+			this.setDeck(hand.getHouse());
+			long money = hand.getMoney();
+			this.houseMoney = money;
+			this.hiLo = hand.getHiLo();
+			this.discard = hand.getDiscard();
+			this.players = hand.getPlayers();
+			ArrayList<Player> tempPlayers = new ArrayList<Player>();
+			for(int i = 0; i < this.numPlayers; i++) {
+				boolean another = this.players[i].promptAnother();
+				if(another) {
+					tempPlayers.add(this.players[i]);
+				}
 			}
-
-			
+			this.numPlayers -= (this.players.length - tempPlayers.size());
+			if(this.numPlayers > 0) {
+				Player[] tempArry = new Player[this.numPlayers];
+				int i = 0;
+				for(Player player:tempPlayers) {
+					tempArry[i] = player;
+					i++;
+				}
+				this.players = tempArry;
+			} else {
+				this.run = false;
+			}
 			if(this.reshuffle()) {
 				this.house.addDeck(discard);
 				this.house.shuffle();
@@ -85,12 +105,19 @@ public class BlackJack {
 	 * The formula for the number of hands on a deck
 	 * equals 6 - the number of players.
 	 */
-	private boolean reshuffle() {
-		//this.house.printDeck();
-		if(this.handCount > 6 - this.numPlayers) {
+	public boolean reshuffle() {
+		if(this.handCount > (6 - this.numPlayers)) {
+			this.handCount = 0;
 			return true;
 		} else {
 			return false;
+		}
+	}
+	
+	protected void addPlayers() {
+		for(int i = 0; i < this.numPlayers; i++) {
+			Player newPlayer = new Player(i+1, this.playerMoney);
+			this.players[i] = newPlayer;
 		}
 	}
 }

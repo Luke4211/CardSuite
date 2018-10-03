@@ -37,6 +37,28 @@ public class Card {
 		
 	}
 	
+	@Override
+	public String toString() {
+		String name;
+		if(this.value == 1) {
+			name = "Ace";
+		}
+		else if(this.value == 11) {
+			name = "Jack";
+		}
+		else if(this.value == 12) {
+			name = "Queen";
+		}
+		else if(this.value == 13) {
+			name = "King";
+		}
+		else {
+			name = value + "";
+		}
+		
+		return (name + " of " + suit);
+	}
+	
 	public int getVal() {
 		return this.value;
 	}

@@ -9,13 +9,20 @@ public class BlackJackHand {
 	private boolean handOver;
 	private boolean hiddenCard;
 	private boolean dealerBust;
-	private int houseMoney;
+	protected boolean isSim;
+	private boolean preCard;
+	private long houseMoney;
 	private int numPlayers;
 	private int handCount;
+	private int minBet;
+	private int initialHiLo;
 	private Player[] players;
+	private BlackJackHiLo hiLoCounter;
 	private Deck house;
 	private Deck dealer;
 	private Deck discard;
+	private Card hideCard;
+	private Card showCard;
 	private Scanner scnr;
 	
 	/*
@@ -24,16 +31,21 @@ public class BlackJackHand {
 	 */
 	public BlackJackHand(Object[] input) {
 		this.house = (Deck)input[0];
-		this.houseMoney = (int)input[1];
+		this.houseMoney = (long)input[1];
 		this.discard = (Deck)input[3];
 		this.numPlayers = (int)input[4];
-		this.handCount = (int)input[5];
 		this.players = (Player[])input[6];
 		this.dealer = new Deck(true);
+		this.initialHiLo = (int)input[7];
+		this.minBet = (int)input[8];
 		this.handOver = false;
 		this.hiddenCard = false;
 		this.dealerBust = false;
 		this.scnr = new Scanner(System.in);
+		this.hiLoCounter = new BlackJackHiLo();
+		this.preCard = true;
+		this.hiLoCounter.setCount(this.initialHiLo);
+		this.isSim = true;
 		
 		
 		
@@ -50,67 +62,64 @@ public class BlackJackHand {
 	 */
 	public void hand() {
 		initalize();
-
-		for(int i = 0; i<this.numPlayers; i++) {
-			int deckNum = this.players[i].getNumDecks();
-			for(int j = 0; j<deckNum; j++) {
-				boolean isBusted = this.bust(players[i].getDeck(j+1));
-				boolean isStanding = this.players[i].getStanding(j+1);
-				
-				if(this.canSplit(players[i].getDeck(1))) {
-					boolean split = this.players[i].promptToSplit(i+1, j+1, this.dealer.getCard(0));
-					
-					if(split) {
-						Card[] cards = new Card[2];
-						cards[0] = this.house.top();
-						cards[1] = this.house.top();
-					
-						this.players[i].split(cards);
-						this.printState();
-					}
-				}
-				Boolean isDoubled = false;
-				boolean toDouble = this.players[i].promptToDouble(i+1, j+1, this.dealer.getCard(0));
-
-				if(toDouble) {
-					Card card = this.house.top();
-					this.players[i].doubleDown(card, j+1);
-					isDoubled = true;
-
-				}
-
-				
-				while(!isBusted && !isStanding && !isDoubled) {
-					
-					boolean playerHit = this.players[i].promptToHit(i+1, j+1, this.dealer.getCard(0));
-					if(playerHit) {
-						this.hit(i, j+1);
-						if(this.bust(players[i].getDeck(j+1))) {
-							this.players[i].bustPlayer(j+1);
+		if(this.showCard.getBlackJackVal() == 1) {
+			this.offerInsurance();
+		}
+		if(!this.handOver) {
+			for(int i = 0; i < this.numPlayers; i++) {
+				for(int j = 0; j < this.players[i].getNumDecks(); j++) {
+					boolean isBusted = this.bust(players[i].getDeck(j+1));
+					boolean isStanding = this.players[i].getStanding(j+1);
+					if(this.canSplit(this.players[i].getDeck(1)) && !this.players[i].checkSplit()) {
+						this.updateHiLo();
+						boolean split = this.players[i].promptToSplit(i+1, j+1, this.dealer.getCard(0), this.players[i].getDeck(j+1), this.getHiLo());
+						if(split) {
+							Card[] cards = new Card[2];
+							Card card = this.drawCard();
+							cards[0] = card;
+							card = this.drawCard();
+							cards[1] = card;
+							this.players[i].split(cards);
+							this.updateHiLo();
 							this.printState();
-							String pause = "";
-							while(pause.equals("")) {
-								System.out.println("You've busted! Hit any key then enter to continue...");
-								pause = scnr.next();
-							}
+							
 						}
-						this.printState();
-					} else {
-						this.players[i].setStand(true, j+1);
 					}
-					isBusted = this.bust(players[i].getDeck(j+1));
-					isStanding = this.players[i].getStanding(j+1);
+					Boolean isDoubled = false;
+					Deck temp = this.players[i].getDeck(j+1);
+					this.updateHiLo();
+					boolean toDouble = this.players[i].promptToDouble(i+1, j+1, this.dealer.getCard(0), temp, this.getHiLo());
+					if(toDouble) {
+						Card card = this.drawCard();
+						this.players[i].doubleDown(card, j+1);
+						isDoubled = true;
+					}
+					while(!isBusted && !isStanding && !isDoubled) {
+						temp = this.players[i].getDeck(j+1);
+						this.updateHiLo();
+						boolean playerHit = this.players[i].promptToHit(i+1, j+1, this.dealer.getCard(0), temp, this.getHiLo());
+						if(playerHit) {
+							this.hit(i, j+1);
+							if(this.bust(players[i].getDeck(j+1))) {
+								this.players[i].bustPlayer(j+1);
+								this.printState();	
+								this.players[i].bustAlert();
+							}						
+							this.printState();						
+						} else {
+							this.players[i].setStand(true, j+1);
+						}
+						isBusted = this.bust(players[i].getDeck(j+1));
+						isStanding = this.players[i].getStanding(j+1);
+					}
+					
 				}
-				
 			}
 		}
 
 		this.showDoubles();
 		this.hitUntil17();
-
-
-		this.cleanUp();
-		this.printState();
+		this.cleanUp();	
 	}
 
 	
@@ -132,18 +141,11 @@ public class BlackJackHand {
 	 * getMoney() returns an array containing
 	 * the player and house money amounts.
 	 */
-	public int getMoney() {
+	public long getMoney() {
 		
 		return this.houseMoney;
 	}
 	
-	/*
-	 * getHandCount() returns the current number of hands
-	 * that have been played on the deck
-	 */
-	public int getHandCount() {
-		return this.handCount;
-	}
 	
 	/*
 	 * getPlayers() returns the array of 
@@ -159,26 +161,22 @@ public class BlackJackHand {
 	 * placed by the player.
 	 */
 	private void initalize() {
-		
+		Card topCard;
 		Scanner scnr = new Scanner(System.in);
 		String input = new String("");
 		this.printState();
 		this.takeBets();
-		Card topCard;
 		this.dealHand();
-		topCard = this.house.top();
+		topCard = this.drawCard();
+		this.hideCard = topCard;
 		this.dealer.addCard(topCard);
 		this.dealHand();
-		topCard = this.house.top();
+		topCard = this.drawCard();
+		this.showCard = topCard;
 		this.dealer.addCard(topCard);
-			
-		
-		
+		this.preCard = false;
+		this.updateHiLo();	
 		this.printState();
-		
-		
-		
-		
 		
 	}
 	
@@ -194,7 +192,6 @@ public class BlackJackHand {
 		Deck tempDeck = this.dealer;
 		boolean firstAce = false;
 		int sum = 0;
-		
 		for(Card card:tempDeck.getDeck()) {
 			if(!firstAce && card.getVal() == 1) {
 				firstAce = true;
@@ -204,17 +201,24 @@ public class BlackJackHand {
 		for(Card card:tempDeck.getDeck()) {
 			sum += card.getBlackJackVal();
 		}
-		
 		if(firstAce) {
 			sum-=1;
 			if(sum == 17) {
 				return true;
 			}
 		}
-		
 		return false;
-		
 	}
+	
+	private void hiLo(Card card) {
+		try {
+			this.hiLoCounter.count(card.getBlackJackVal());
+		} catch(NullPointerException exception) {
+			
+		}
+	}
+	
+	
 	/*
 	 * winner() determines who wins between a given
 	 * player's deck and the dealers deck. Returns
@@ -224,6 +228,15 @@ public class BlackJackHand {
 	private int winner(Deck player, Deck dealer) {
 		int playerPts = handPts(player);
 		int dealerPts = handPts(dealer);
+		if(dealer.size() == 2 && dealerPts == 21) {
+			if(player.size() == 2 && playerPts == 21) {
+				return 2;
+			} else {
+				return 1;
+			}
+		} else if(player.size() == 2 && playerPts == 21) {
+			return 0;
+		}
 		
 		playerPts = 21 - playerPts;
 		dealerPts = 21 - dealerPts;
@@ -241,6 +254,10 @@ public class BlackJackHand {
 		}
 	}
 	
+	public int getHiLo() {
+		return this.hiLoCounter.getCount();
+	}
+	
 	/*
 	 * bust() determines if the inputted deck's
 	 * value exceeds 21, if so it returns true,
@@ -254,20 +271,61 @@ public class BlackJackHand {
 		}
 	}
 	
+	private void offerInsurance() {
+		this.updateHiLo();
+		boolean noInsure = true;
+		boolean dealerWins = true;
+		for(int i = 0; i < this.numPlayers; i++) {
+			boolean insure = this.players[i].promptInsurance(this.getHiLo());
+			if(insure) {
+				this.players[i].insure();
+				noInsure = false;
+		
+			}
+		}
+		if(!noInsure) {
+			if(this.hideCard.getBlackJackVal() == 10) {
+				dealerWins = false;
+				this.hiddenCard = true;
+				this.handOver = true;
+				
+			}
+			for(int i = 0; i < this.numPlayers; i++) {
+				if(this.players[i].getInsured()) {
+					int insure = this.players[i].getInsurance();
+					int add = this.players[i].claimInsurance(!dealerWins);
+					if(add == 0) {
+						this.houseMoney -= 2*insure;
+					} else {
+						this.houseMoney += add;
+					}
+				}
+			}
+		}
+		this.updateHiLo();
+		
+		this.printState();
+		
+		if(!this.isSim) {
+			System.out.println("Insurance has been settled. press any key");
+			String pause = this.scnr.nextLine();
+		}
+	}
+	
 	/*
 	 * dealHand() deals one card to each
 	 * deck in play (minus the dealer deck).
 	 */
 	private void dealHand() {
-		Card topCard;
 		for(int i = 0; i < this.numPlayers; i++) {
 			int numDecks = this.players[i].getNumDecks();
 			for(int j = 0; j < numDecks; j++) {
-				topCard = this.house.top();
+				Card topCard = this.drawCard();
 				this.players[i].addCard(j+1, topCard);
 			}
 			
 		}
+		this.updateHiLo();
 	}
 	
 	/*
@@ -288,7 +346,9 @@ public class BlackJackHand {
 	 *  deck
 	 */
 	private void hit(int player, int deck) {
-		this.players[player].addCard(deck, this.house.top());
+		Card card = this.drawCard();
+		this.players[player].addCard(deck, card);
+		this.updateHiLo();
 		
 	}
 	
@@ -297,7 +357,9 @@ public class BlackJackHand {
 	 * and adds it to the dealer's deck.
 	 */
 	private void hitDealer() {
-		this.dealer.addCard(this.house.top());
+		Card card = this.drawCard();
+		this.dealer.addCard(card);
+		this.updateHiLo();
 	}
 	
 	/*
@@ -311,37 +373,68 @@ public class BlackJackHand {
 			if(this.soft17()) {
 				this.hitDealer();
 				this.printState();
+				
 				sum = handPts(this.dealer);
 			}
 			while(sum<17) {
 				this.hitDealer();
 				this.printState();
+				
 				sum = handPts(this.dealer);
 			}		
 			printState();
 			if(bust(this.dealer)) {
 				this.dealerBust = true;
 			}
-			
-			System.out.println("Winning players (if any): ");
-			for(int k = 0; k < this.numPlayers; k++) {
-				for(int l = 0; l < this.players[k].getNumDecks(); l++) {
-					if(this.winner(this.players[k].getDeck(l+1), this.dealer) == 0) {
-						System.out.println("Player " + (k+1) + " Deck " + (l+1));
+			if(!this.isSim) {
+				System.out.println("" + this.isSim);
+				System.out.println("Winning players (if any): ");
+				for(int k = 0; k < this.numPlayers; k++) {
+					for(int l = 0; l < this.players[k].getNumDecks(); l++) {
+						if(this.winner(this.players[k].getDeck(l+1), this.dealer) == 0) {
+							System.out.println("Player " + (k+1) + " Deck " + (l+1));
+						}
 					}
 				}
-			}
 			
-			String pause = "";
-			while(pause.equals("")) {
-				System.out.println("Hit any key then enter to continue...");
-				pause = scnr.next();
+			
+				String pause = "";
+				while(pause.equals("")) {
+					System.out.println("Hit any key then enter to continue...");
+					pause = scnr.next();
+				}
 			}
 			this.handOver = true;
+			this.updateHiLo();
 		}
 
 	}
 	
+	private void updateHiLo() {
+		this.hiLoCounter.setCount(0);
+		for(int i = 0; i < this.numPlayers; i++) {
+			for(int j = 0; j < this.players[i].getNumDecks(); j++) {
+				ArrayList<Card> cards = this.players[i].getDeck(j+1).getDeck();
+				for(Card card: cards) {
+					this.hiLo(card);
+				}
+			}
+		}
+		ArrayList<Card> disCards = this.discard.getDeck();
+		for(Card card: disCards) {
+			this.hiLo(card);
+		}
+		if(!this.hiddenCard && !this.preCard) {
+			this.hiLo(this.showCard);
+			
+		} else {
+			ArrayList<Card> dealer = this.dealer.getDeck();
+			for(Card card: dealer) {
+				this.hiLo(card);
+			}
+		}
+		
+	}
 	/*
 	 * takeBet() takes a bet from each player
 	 * in the game.
@@ -352,12 +445,12 @@ public class BlackJackHand {
 		Scanner scnr = new Scanner(System.in);
 		String input = new String();
 		for(int i = 0; i < this.numPlayers; i++) {
-			int bet = -1;
-			while(bet < 0 || bet%2 != 0 || bet%10 != 0 || bet > this.players[i].getMoney()) {
-				System.out.println("Player " + this.players[i].getNum() + ", please place your bet, even multiples of 10 only.");
-				bet = scnr.nextInt();
-			}
-			this.players[i].bet(bet);			
+			this.updateHiLo();
+			int count = this.hiLoCounter.getCount();
+			long bet = 0;
+			bet = this.players[i].promptToBet(i+1, this.players[i].getMoney(), count, minBet);
+			this.players[i].bet(bet);		
+			
 		}
 		
 	}
@@ -370,7 +463,7 @@ public class BlackJackHand {
 		if(deck.size() == 2) {
 			Card card1 = deck.getCard(0);
 			Card card2 = deck.getCard(1);
-			if(card1.getVal() == card2.getVal()) {
+			if(card1.getBlackJackVal() == card2.getBlackJackVal()) {
 				return true;
 			}
 		}
@@ -383,25 +476,34 @@ public class BlackJackHand {
 	 */
 	private int handPts(Deck hand) {
 		int sum = 0;
+		boolean val10 = false;
 		ArrayList<Card> aces = new ArrayList<Card>();
 		
 		for(int i = 0; i < hand.size(); i++) {
-			if(hand.getCard(i).getBlackJackVal() == 1) {
+			int bjVal;
+			try {
+				bjVal = hand.getCard(i).getBlackJackVal();
+			} catch(NullPointerException exception) {
+				bjVal = 0;
+			}
+			if(bjVal == 1) {
 				aces.add(hand.getCard(i));
 			} else {
-				sum += hand.getCard(i).getBlackJackVal();
+				sum += bjVal;
 			}
 		}
-
 		for(int i = 0; i<aces.size(); i++) {
 			if((sum+11) > 21){
-					sum++;
+				if(sum+1 > 21 && val10) {
+					sum-=10;
+					val10 = false;
+				}
+				sum++;
 			} else {
 				sum+= 11;
+				val10 = true;
 			}
 		}
-		
-		
 		return sum;
 	}
 	
@@ -423,33 +525,37 @@ public class BlackJackHand {
 	 * the decks together into the house deck.
 	 */
 	private void cleanUp() {
+		this.printState();
 		for(int i = 0; i < this.numPlayers; i++) {
+			
 			int numDecks = this.players[i].getNumDecks();
 			for(int j = 0; j < numDecks; j++) {
 				
+				
 				int winner = this.winner(this.players[i].getDeck(j+1), this.dealer);
-				this.discard.addDeck(this.players[i].getDeck(j+1));
-				this.players[i].newDeck(j+1);
 				if(winner == 0) {
-					if(this.handPts(this.players[i].getDeck(j+1)) == 21) {
-						int bet = this.players[i].claimBet(j+1);
-						this.houseMoney -= bet;
-						bet = (int)(1.5*bet) + bet;
-						this.players[i].addWinnings(bet);
-										
+					if(this.handPts(this.players[i].getDeck(j+1)) == 21 &&
+						this.players[i].getDeck(j+1).size() == 2) {
+						long bet = this.players[i].claimBet(j+1);
+						int payOut = (int)(1.5*bet);
+						this.houseMoney -= payOut;
+						bet += payOut;
+						this.players[i].addWinnings(bet);					
 					} else {
-						int bet = this.players[i].claimBet(j+1);
+						long bet = this.players[i].claimBet(j+1);
 						this.players[i].addWinnings(2*bet);
 						this.houseMoney -= bet;
 					}
 				} else if(winner == 1) {
-					int bet = this.players[i].claimBet(j+1);
+					long bet = this.players[i].claimBet(j+1);
 					this.houseMoney += bet;
 				} else if(winner == 2) {
-					int bet = this.players[i].claimBet(j+1);
+					long bet = this.players[i].claimBet(j+1);
 					this.players[i].addWinnings(bet);
 				}
-			this.players[i].reset();	
+				this.discard.addDeck(this.players[i].getDeck(j+1));
+				this.players[i].newDeck(j+1);
+				this.players[i].reset();	
 			}
 		}
 		this.discard.addDeck(this.dealer);
@@ -475,6 +581,21 @@ public class BlackJackHand {
 		return allFin;
 	}
 	
+	private Card drawCard() {
+		Card topCard;
+		try {
+			topCard = this.house.top();
+		} catch(IndexOutOfBoundsException exception) {
+			Deck tempDeck = new Deck(true);
+			tempDeck.addDeck(this.discard);
+			this.house = tempDeck;
+			this.discard = new Deck(true);
+			topCard = this.house.top();
+		}
+		this.updateHiLo();
+		return topCard;
+	}
+	
 	/*
 	 * printPlayerInfo() prints the basic information 
 	 * of each player in game.
@@ -482,9 +603,10 @@ public class BlackJackHand {
 	private void printPlayerInfo() {
 		for(int i = 0; i < this.numPlayers; i++) {
 			System.out.println("*****************************************************");
-			System.out.println("Player " + (i+1));
+			System.out.println("Player " + (this.players[i].getNum()));
 			System.out.println("Money: $" + this.players[i].getMoney());
 			System.out.println("Bet: $" + this.players[i].getBet());
+			System.out.println("Insurance: $" + this.players[i].getInsurance());
 			for(int j = 0; j < this.players[i].getNumDecks(); j++) {
 				System.out.println("Deck: " + (j+1) + " Size of deck: " + this.players[i].getDeck(j+1).size());
 				if(this.players[i].getDeck(j+1).size() == 0) {
@@ -502,9 +624,14 @@ public class BlackJackHand {
 	 * printState() prints a primitive textUI for the game
 	 */
 	private void printState() {
+		if(this.isSim) {
+			return;
+		}
+		this.updateHiLo();
 		flushScreen();
 		System.out.println("*****************************************************");
 		System.out.println("House money: $" + this.houseMoney);
+		System.out.println("Deck Count: " + this.hiLoCounter.getCount());
 		this.printPlayerInfo();
 		System.out.println("*****************************************************");
 		Card dealerShow;

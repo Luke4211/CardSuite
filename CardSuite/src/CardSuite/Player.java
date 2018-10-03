@@ -13,17 +13,19 @@ public class Player {
 	private int bet;
 	private int splitBet;
 	private int insurance;
-	private int money;
+	private long money;
 	private boolean deck1Bust;
 	private boolean deck2Bust;
 	private boolean standing1;
 	private boolean standing2;
-	private boolean isDoubled;
+	private boolean isDoubled1;
+	private boolean isDoubled2;
 	private boolean isSplit;
+	private boolean insured;
 	/*
 	 * Basic constructor for Player class.
 	 */
-	public Player(int num, int money) {
+	public Player(int num, long money) {
 		this.deck1 = new Deck(true);
 		this.deck2 = new Deck(true);
 		this.numDecks = 1;
@@ -33,12 +35,13 @@ public class Player {
 		this.deck2Bust = false;
 		this.standing1 = false;
 		this.standing2 = false;
-		this.isDoubled = false;
+		this.isDoubled1 = false;
+		this.isDoubled2 = false;
 		this.isSplit = false;
+		this.insured = true;
 		this.bet = 0;
 		this.splitBet = 0;
 		this.insurance = 0;
-		
 	}
 	
 	
@@ -65,12 +68,13 @@ public class Player {
 		this.deck2Bust = false;
 		this.standing1 = false;
 		this.standing2 = false;
-		this.isDoubled = false;
+		this.isDoubled1 = false;
+		this.isDoubled2 = false;
 		this.numDecks = 1;
-		this.insurance = 0;
 		this.doubleCard1 = null;
 		this.doubleCard2 = null;
 		this.isSplit = false;
+		this.insured = false;
 		
 	}
 	
@@ -99,8 +103,10 @@ public class Player {
 	}
 	
 	public void showDouble() {
-		if(this.isDoubled) {
+		if(this.isDoubled1) {
 			this.deck1.addCard(doubleCard1);
+		}
+		if(this.isDoubled2) {
 			this.deck2.addCard(doubleCard2);
 		}
 		
@@ -115,7 +121,6 @@ public class Player {
 		this.deck2.addCard(this.deck1.top());
 		this.deck1.addCard(cards[0]);
 		this.deck2.addCard(cards[1]);
-		this.deck2.printDeck();
 	}	
 	
 	public int getNumDecks() {
@@ -128,24 +133,21 @@ public class Player {
 			this.money -= bet;
 			this.bet *= 2;
 			this.standing1 = true;
+			this.isDoubled1 = true;
 		} else {
 			this.doubleCard2 = card;
 			this.money -= splitBet;
 			this.splitBet *= 2;
 			this.standing2 = true;
+			this.isDoubled2 = true;
 		}
-		this.isDoubled = true;
-		
-	
-		
-		
-		
+
 	}
 	
-	public boolean promptToHit(int playerNum, int deckNum, Card dealerCard) {
+	public boolean promptToHit(int playerNum, int deckNum, Card dealerCard, Deck pDeck, int count) {
 		String input = "";
 		while(!input.equals("h") && !input.equals("s") ) {
-			System.out.print("Player " + (playerNum) + ", would you like to hit or stand on deck " + (deckNum) + "? h/s ");
+			System.out.println("Player " + (playerNum) + ", would you like to hit or stand on deck " + (deckNum) + "? h/s ");
 			input = this.scnr.next();
 		}
 		
@@ -156,27 +158,24 @@ public class Player {
 		}
 	}
 	
-	public boolean promptToSplit(int playerNum, int deck, Card dealerCard) {
-		String split;
-		System.out.println("Player " + playerNum + " would you like to split? y/n");
-		split = scnr.nextLine();
-		while(!split.equals("y") && !split.equals("n")) {
+	public boolean promptToSplit(int playerNum, int deck, Card dealerCard, Deck pDeck, int count) {
+		String input = "";
+		while(!input.equals("y") && !input.equals("n") ) {
 			System.out.println("Player " + playerNum + " would you like to split? y/n");
-			split = scnr.nextLine();
+			input = this.scnr.next();
 		}
-		if(split.equals("y")) {
+		if(input.equals("y")) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
-	public boolean promptToDouble(int playerNum, int deck, Card dealerCard) {
+	public boolean promptToDouble(int playerNum, int deck, Card dealerCard, Deck pDeck, int count) {
 		String input = "";
 		while(!input.equals("y") && !input.equals("n")) {
 			System.out.println("Player " + playerNum + ", would you like to double down? on deck " + deck + "? y/n");
-			input = scnr.nextLine();
-
+			input = scnr.next();
 		}
 		
 		if(input.equals("y")) {
@@ -186,9 +185,84 @@ public class Player {
 		}
 	}
 	
-	public void insure(int amount) {
-		this.insurance = amount;
-		this.money -= amount;
+	public long promptToBet(int playerNum, long money, int count, long minBet) {
+		long bet = -1;
+		while(bet < 0 || bet%2 != 0 || bet%10 != 0 || bet > money || bet < minBet) {
+			System.out.println("Player " + playerNum + ", please place your bet, even multiples of 10 only.");
+			System.out.println("Minimum bet: " + minBet);
+			bet = scnr.nextLong();
+		}
+		return bet;
+	}
+	
+	public boolean promptAnother() {
+		String another = "";
+		
+		while(!another.equals("n") && !another.equals("y")) {
+			System.out.println("Player " + this.playerNum + ", would you like to play another hand? y/n");
+			another = scnr.next();
+		}
+		
+		if(another.equals("y")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean promptInsurance(int count) {
+		String input = "";
+		while(!input.equals("y") && !input.equals("n")) {
+			System.out.println("Player " + this.playerNum + ", would you like to take insurance? y/n");
+			input = scnr.next();
+
+		}
+		if(input.equals("y")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public void bustAlert() {
+		String pause = "";
+		while(pause.equals("")) {
+			System.out.println("Player " + this.getNum() + " has busted. Hit any key then enter to continue...");
+			pause = scnr.next();
+		}
+	}
+	
+	
+	public void insure() {
+		this.insured = true;
+		this.insurance = this.bet/2;
+		this.money -= this.insurance;
+		
+	}
+	
+	public int claimInsurance(boolean payOut) {
+		if(payOut) {
+			this.money += 3*this.insurance;
+			this.insurance = 0;
+			return 0;
+		} else {
+			int rtn = this.insurance;
+			this.insurance = 0;
+			return rtn;
+		}
+	}
+	
+	public int getInsurance() {
+		return this.insurance;
+	}
+	
+	
+	public void addMoney(int money) {
+		this.money += money;
+	}
+	
+	public boolean getInsured() {
+		return this.insured;
 	}
 	
 	public boolean getStanding(int deck) {
@@ -210,25 +284,25 @@ public class Player {
 		
 	}
 	
-	public void bet(int amount) {
-		this.bet = amount;
+	public void bet(long bet2) {
+		this.bet += bet2;
 		this.money -= this.bet;
 	}
 	
-	public int getBet() {
+	public long getBet() {
 		return this.bet + this.splitBet;
 	}
 	
-	public int getMoney() {
+	public long getMoney() {
 		return this.money;
 	}
 	
-	public void addWinnings(int amount) {
-		this.money += amount;
+	public void addWinnings(long l) {
+		this.money += l;
 	}
 	
-	public int claimBet(int index) {
-		int rtn = 0;
+	public long claimBet(int index) {
+		long rtn = 0;
 		if(index == 1) {
 			rtn = this.bet;
 			this.bet = 0;
@@ -248,12 +322,17 @@ public class Player {
 	}
 	
 	public Deck getDeck(int deck) {
+		Deck rtn;
 		if(deck == 1) {
-			return this.deck1;
+			rtn = this.deck1;
+			return rtn;
 		} else if(deck == 2) {
-			return this.deck2;
+			rtn = this.deck2;
+			return rtn;
 		} else {
 			return null;
 		}
 	}
+	
+
 }
