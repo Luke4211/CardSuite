@@ -22,6 +22,7 @@ public class Player {
 	private boolean isDoubled2;
 	private boolean isSplit;
 	private boolean insured;
+	private boolean surrendered;
 	/*
 	 * Basic constructor for Player class.
 	 */
@@ -37,6 +38,7 @@ public class Player {
 		this.standing2 = false;
 		this.isDoubled1 = false;
 		this.isDoubled2 = false;
+		this.surrendered = false;
 		this.isSplit = false;
 		this.insured = true;
 		this.bet = 0;
@@ -224,7 +226,7 @@ public class Player {
 		}
 	}
 	
-	public boolean promptSurrender() {
+	public boolean promptSurrender(int playerNum, Card dealerCard, Deck pDeck, int count) {
 		String input = "";
 		while(!input.equals("y") && !input.equals("n")) {
 			System.out.println("Player " + this.playerNum + ", would you like to surrender?");			
@@ -270,7 +272,18 @@ public class Player {
 		return this.insurance;
 	}
 	
+	public int surrender() {
+		int halfBet = this.bet/2;
+		this.money += halfBet;
+		this.bet = 0;
+		this.standing1 = true;
+		this.surrendered = true;
+		return halfBet;
+	}
 	
+	public boolean getSurrender() {
+		return this.surrendered;
+	}
 	public void addMoney(int money) {
 		this.money += money;
 	}

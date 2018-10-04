@@ -69,6 +69,16 @@ public class BlackJackBasicAI extends Player {
 		return false;
 	}
 	
+	@Override 
+	public boolean promptSurrender(int playerNum, Card dealerCard, Deck pDeck, int count) {
+		String surrender = bs.getDecision(pDeck, dealerCard);
+		if(surrender.equals("rh") || surrender.equals("rs")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 }
 
 

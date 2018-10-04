@@ -45,7 +45,7 @@ public class BlackJackHand {
 		this.hiLoCounter = new BlackJackHiLo();
 		this.preCard = true;
 		this.hiLoCounter.setCount(this.initialHiLo);
-		this.isSim = true;
+		this.isSim = false;
 		
 		
 		
@@ -66,53 +66,69 @@ public class BlackJackHand {
 			this.offerInsurance();
 		}
 		if(!this.handOver) {
-			for(int i = 0; i < this.numPlayers; i++) {
-				for(int j = 0; j < this.players[i].getNumDecks(); j++) {
-					boolean isBusted = this.bust(players[i].getDeck(j+1));
-					boolean isStanding = this.players[i].getStanding(j+1);
-					if(this.canSplit(this.players[i].getDeck(1)) && !this.players[i].checkSplit()) {
-						this.updateHiLo();
-						boolean split = this.players[i].promptToSplit(i+1, j+1, this.dealer.getCard(0), this.players[i].getDeck(j+1), this.getHiLo());
-						if(split) {
-							Card[] cards = new Card[2];
-							Card card = this.drawCard();
-							cards[0] = card;
-							card = this.drawCard();
-							cards[1] = card;
-							this.players[i].split(cards);
+			if(!this.isSim) {
+			}
+			if(this.natural(this.dealer)) {
+				this.hiddenCard = false;
+				for(int i = 0; i < this.numPlayers; i++) {
+					this.players[i].bustPlayer(1);
+					this.handOver = true;
+				}
+			} else {
+				for(int i = 0; i < this.numPlayers; i++) {
+					this.updateHiLo();
+					boolean surrender = this.players[i].promptSurrender(i, this.showCard, this.players[i].getDeck(1), this.getHiLo());
+					if(surrender) {
+						this.houseMoney += this.players[i].surrender();
+					} else {
+						for(int j = 0; j < this.players[i].getNumDecks(); j++) {
+							boolean isBusted = this.bust(players[i].getDeck(j+1));
+							boolean isStanding = this.players[i].getStanding(j+1);
+							if(this.canSplit(this.players[i].getDeck(1)) && !this.players[i].checkSplit()) {
+								this.updateHiLo();
+								boolean split = this.players[i].promptToSplit(i+1, j+1, this.dealer.getCard(0), this.players[i].getDeck(j+1), this.getHiLo());
+								if(split) {
+									Card[] cards = new Card[2];
+									Card card = this.drawCard();
+									cards[0] = card;
+									card = this.drawCard();
+									cards[1] = card;
+									this.players[i].split(cards);
+									this.updateHiLo();
+									this.printState();
+									
+								}
+							}
+							Boolean isDoubled = false;
+							Deck temp = this.players[i].getDeck(j+1);
 							this.updateHiLo();
-							this.printState();
+							boolean toDouble = this.players[i].promptToDouble(i+1, j+1, this.dealer.getCard(0), temp, this.getHiLo());
+							if(toDouble) {
+								Card card = this.drawCard();
+								this.players[i].doubleDown(card, j+1);
+								isDoubled = true;
+							}
+							while(!isBusted && !isStanding && !isDoubled) {
+								temp = this.players[i].getDeck(j+1);
+								this.updateHiLo();
+								boolean playerHit = this.players[i].promptToHit(i+1, j+1, this.dealer.getCard(0), temp, this.getHiLo());
+								if(playerHit) {
+									this.hit(i, j+1);
+									if(this.bust(players[i].getDeck(j+1))) {
+										this.players[i].bustPlayer(j+1);
+										this.printState();	
+										this.players[i].bustAlert();
+									}						
+									this.printState();						
+								} else {
+									this.players[i].setStand(true, j+1);
+								}
+								isBusted = this.bust(players[i].getDeck(j+1));
+								isStanding = this.players[i].getStanding(j+1);
+							}
 							
 						}
 					}
-					Boolean isDoubled = false;
-					Deck temp = this.players[i].getDeck(j+1);
-					this.updateHiLo();
-					boolean toDouble = this.players[i].promptToDouble(i+1, j+1, this.dealer.getCard(0), temp, this.getHiLo());
-					if(toDouble) {
-						Card card = this.drawCard();
-						this.players[i].doubleDown(card, j+1);
-						isDoubled = true;
-					}
-					while(!isBusted && !isStanding && !isDoubled) {
-						temp = this.players[i].getDeck(j+1);
-						this.updateHiLo();
-						boolean playerHit = this.players[i].promptToHit(i+1, j+1, this.dealer.getCard(0), temp, this.getHiLo());
-						if(playerHit) {
-							this.hit(i, j+1);
-							if(this.bust(players[i].getDeck(j+1))) {
-								this.players[i].bustPlayer(j+1);
-								this.printState();	
-								this.players[i].bustAlert();
-							}						
-							this.printState();						
-						} else {
-							this.players[i].setStand(true, j+1);
-						}
-						isBusted = this.bust(players[i].getDeck(j+1));
-						isStanding = this.players[i].getStanding(j+1);
-					}
-					
 				}
 			}
 		}
@@ -209,6 +225,17 @@ public class BlackJackHand {
 		}
 		return false;
 	}
+	
+	private boolean natural(Deck hand) {
+		if(hand.size() == 2) {
+			if(this.handPts(hand) == 21) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	
 	private void hiLo(Card card) {
 		try {
@@ -391,7 +418,7 @@ public class BlackJackHand {
 				System.out.println("Winning players (if any): ");
 				for(int k = 0; k < this.numPlayers; k++) {
 					for(int l = 0; l < this.players[k].getNumDecks(); l++) {
-						if(this.winner(this.players[k].getDeck(l+1), this.dealer) == 0) {
+						if(this.winner(this.players[k].getDeck(l+1), this.dealer) == 0 && !this.players[k].getSurrender()) {
 							System.out.println("Player " + (k+1) + " Deck " + (l+1));
 						}
 					}
