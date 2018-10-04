@@ -224,6 +224,20 @@ public class Player {
 		}
 	}
 	
+	public boolean promptSurrender() {
+		String input = "";
+		while(!input.equals("y") && !input.equals("n")) {
+			System.out.println("Player " + this.playerNum + ", would you like to surrender?");			
+			input = scnr.next();
+
+		}
+		if(input.equals("y")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public void bustAlert() {
 		String pause = "";
 		while(pause.equals("")) {
