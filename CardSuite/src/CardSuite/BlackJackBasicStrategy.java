@@ -27,7 +27,7 @@ public class BlackJackBasicStrategy {
 	 */
 	
 	private final String[][] hardDecisionTable = {
-        /* Hands:                         2     3     4     5     6     7     8     9     10    A  */
+	/* Hands:                         2     3     4     5     6     7     8     9     10    A  */
 	/*4-7 */			{"h",  "h",  "h",  "h",  "h",  "h",  "h",  "h",  "h",  "h"  },
 	/* 8  */			{"h",  "h",  "h",  "dh", "dh", "h",  "h",  "h",  "h",  "h"  },
 	/* 9  */			{"dh", "dh", "dh", "dh", "dh", "h",  "h",  "h",  "h",  "h"  },

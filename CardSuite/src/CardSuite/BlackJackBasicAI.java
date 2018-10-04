@@ -12,9 +12,6 @@ public class BlackJackBasicAI extends Player {
 	public BlackJackBasicAI(int num, long money) {
 		super(num, money);
 		bs = new BlackJackBasicStrategy();
-		
-		
-		
 	}
 	/*
 	 * (non-Javadoc)

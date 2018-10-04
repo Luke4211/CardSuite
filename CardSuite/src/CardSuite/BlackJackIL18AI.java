@@ -9,7 +9,7 @@ public class BlackJackIL18AI extends BlackJackHiLoAI {
 	private Illustrious18 il;
 	public BlackJackIL18AI(int num, long money) {
 		super(num, money);
-		il = new Illustrious18();
+		this.il = new Illustrious18();
 	}
 	
 	@Override 

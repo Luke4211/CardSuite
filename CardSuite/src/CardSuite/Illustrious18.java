@@ -24,7 +24,7 @@ public class Illustrious18 	extends BlackJackBasicStrategy {
 	 * following basic strategy.
 	 */
 	private final String[][] hardIL18 = {
-		        /* Hands:                         2    3    4    5    6    7    8    9    10   A  */
+		    /* Hands:                         2    3    4    5    6    7    8    9    10   A  */
 			/*4-7 */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x"},
 			/* 8  */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x"},
 			/* 9  */			{"1", "x", "x", "x", "x", "3", "x", "x", "x", "x"},
@@ -40,7 +40,7 @@ public class Illustrious18 	extends BlackJackBasicStrategy {
 			};
 	
 	private final String[][] moveIL18 = {
-		        /* Hands:                         2    3    4    5    6    7    8    9    10   A  */
+		    /* Hands:                         2    3    4    5    6    7    8    9    10   A  */
 			/*4-7 */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x" },
 			/* 8  */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x" },
 			/* 9  */			{"dh","x", "x", "x", "x", "dh","x", "x", "x", "x" },
