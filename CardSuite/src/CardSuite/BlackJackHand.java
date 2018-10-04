@@ -67,6 +67,7 @@ public class BlackJackHand {
 		}
 		if(!this.handOver) {
 			if(!this.isSim) {
+				
 			}
 			if(this.natural(this.dealer)) {
 				this.hiddenCard = false;
@@ -126,7 +127,6 @@ public class BlackJackHand {
 								isBusted = this.bust(players[i].getDeck(j+1));
 								isStanding = this.players[i].getStanding(j+1);
 							}
-							
 						}
 					}
 				}

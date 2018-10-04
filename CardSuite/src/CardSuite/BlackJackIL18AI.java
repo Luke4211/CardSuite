@@ -53,5 +53,15 @@ public class BlackJackIL18AI extends BlackJackHiLoAI {
 			return false;
 		}
 	}
+	
+	@Override
+	public boolean promptSurrender(int playerNum, Card dealerCard, Deck pDeck, int count) {
+		String surrender = il.getSurrender(pDeck, dealerCard);
+		if(surrender.equals("rh") || surrender.equals("rs") || surrender.equals("r")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 }
