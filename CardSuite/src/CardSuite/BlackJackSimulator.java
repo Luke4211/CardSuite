@@ -11,8 +11,8 @@ public class BlackJackSimulator extends BlackJack {
 	private long timeStart;
 	private long timeEnd;
 	public BlackJackSimulator(long dealerMoney, long playerMoney, int numPlayers,
-			int numHands, int minBet, int AItype) { //AI type: 1 = basic strategy, 2 = hilo
-		super(dealerMoney, playerMoney, numPlayers, numHands, minBet);
+			int numHands, int minBet, int AItype, int countStyle) { //AI type: 1 = basic strategy, 2 = hilo
+		super(dealerMoney, playerMoney, numPlayers, numHands, minBet, countStyle);
 		this.numHands = numHands;
 		this.counter = 0;
 		this.type = AItype;
