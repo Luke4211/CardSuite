@@ -23,8 +23,8 @@ public class Illustrious18 	extends BlackJackBasicStrategy {
 	 * in the first decision table. x's represent
 	 * following basic strategy.
 	 */
-	private final String[][] indicesIL18 = {
-		    /* Hands:             2    3    4    5    6    7    8    9    10   A  */
+	private final String[][] hardIL18 = {
+		        /* Hands:                         2    3    4    5    6    7    8    9    10   A  */
 			/*4-7 */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x"},
 			/* 8  */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x"},
 			/* 9  */			{"1", "x", "x", "x", "x", "3", "x", "x", "x", "x"},
@@ -39,8 +39,8 @@ public class Illustrious18 	extends BlackJackBasicStrategy {
 			/* 18+*/			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x"},	
 			};
 	
-	private final String[][] decisionIL18 = {
-		    /* Hands:                         2    3    4    5    6    7    8    9    10   A  */
+	private final String[][] moveIL18 = {
+		        /* Hands:                         2    3    4    5    6    7    8    9    10   A  */
 			/*4-7 */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x" },
 			/* 8  */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x" },
 			/* 9  */			{"dh","x", "x", "x", "x", "dh","x", "x", "x", "x" },
@@ -54,23 +54,6 @@ public class Illustrious18 	extends BlackJackBasicStrategy {
 			/* 17 */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x" },
 			/* 18+*/			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x" },	
 			};
-	
-	private final String[][] fab4Indices = {
-		    /* Hands:             2    3    4    5    6    7    8    9    10   A  */
-			/*4-7 */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x"},
-			/* 8  */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x"},
-			/* 9  */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x"},
-			/* 10 */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x"},
-			/* 11 */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x"},
-			/* 12 */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x"},
-			/* 13 */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x"},
-			/* 14 */			{"x", "x", "x", "x", "x", "x", "x", "x", "3", "x"},
-			/* 15 */			{"x", "x", "x", "x", "x", "x", "x", "2", "0", "1"},
-			/* 16 */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x"},
-			/* 17 */			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x"},
-			/* 18+*/			{"x", "x", "x", "x", "x", "x", "x", "x", "x", "x"},	
-			};
-	
 	
 	public Illustrious18() {
 		super();
@@ -96,30 +79,11 @@ public class Illustrious18 	extends BlackJackBasicStrategy {
 		if(!soft && !split ) {
 			int row = super.getHardRow(super.handPts(deck));
 			int col = super.getCol(card);
-			String decision = this.indicesIL18[row][col];
+			String decision = this.hardIL18[row][col];
 			if(!decision.equals("x")) {
 				int index = Integer.parseInt(decision);
 				if(this.count >= index) {
-					return this.decisionIL18[row][col];
-				} else {
-					return super.getDecision(deck, card);
-				}
-			}
-		}
-		return super.getDecision(deck, card);
-	}
-	
-	public String getSurrender(Deck deck, Card card) {
-		boolean soft = super.isSoft(deck);
-		boolean split = super.isSplit(deck);
-		if(!soft && !split ) {
-			int row = super.getHardRow(super.handPts(deck));
-			int col = super.getCol(card);
-			String decision = this.fab4Indices[row][col];
-			if(!decision.equals("x")) {
-				int index = Integer.parseInt(decision);
-				if(this.count >= index) {
-					return "r";
+					return this.moveIL18[row][col];
 				} else {
 					return super.getDecision(deck, card);
 				}

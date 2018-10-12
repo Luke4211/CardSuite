@@ -12,6 +12,9 @@ public class BlackJackBasicAI extends Player {
 	public BlackJackBasicAI(int num, long money) {
 		super(num, money);
 		bs = new BlackJackBasicStrategy();
+		
+		
+		
 	}
 	/*
 	 * (non-Javadoc)
@@ -67,16 +70,6 @@ public class BlackJackBasicAI extends Player {
 	@Override
 	public boolean promptInsurance(int count) {
 		return false;
-	}
-	
-	@Override 
-	public boolean promptSurrender(int playerNum, Card dealerCard, Deck pDeck, int count) {
-		String surrender = bs.getDecision(pDeck, dealerCard);
-		if(surrender.equals("rh") || surrender.equals("rs")) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 	
 }

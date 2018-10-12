@@ -50,8 +50,7 @@ public class BlackJackSimulator extends BlackJack {
 				
 			}
 		
-		} 
-		
+		}
 		System.out.println("Dealer End money: " + this.houseMoney);
 		for(int i = 0; i < this.numPlayers; i++) {
 			System.out.println("Player " + this.players[i].getNum() + " end money: " 
@@ -62,6 +61,7 @@ public class BlackJackSimulator extends BlackJack {
 		this.timeEnd -= this.timeStart;
 		this.timeEnd /= 1000;
 		System.out.println("Elapsed seconds: " + this.timeEnd );
+		
 	}
 	
 	@Override

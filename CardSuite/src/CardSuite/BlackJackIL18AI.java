@@ -9,7 +9,7 @@ public class BlackJackIL18AI extends BlackJackHiLoAI {
 	private Illustrious18 il;
 	public BlackJackIL18AI(int num, long money) {
 		super(num, money);
-		this.il = new Illustrious18();
+		il = new Illustrious18();
 	}
 	
 	@Override 
@@ -48,16 +48,6 @@ public class BlackJackIL18AI extends BlackJackHiLoAI {
 	@Override
 	public boolean promptInsurance(int count) {
 		if(count >= 3) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	@Override
-	public boolean promptSurrender(int playerNum, Card dealerCard, Deck pDeck, int count) {
-		String surrender = il.getSurrender(pDeck, dealerCard);
-		if(surrender.equals("rh") || surrender.equals("rs") || surrender.equals("r")) {
 			return true;
 		} else {
 			return false;

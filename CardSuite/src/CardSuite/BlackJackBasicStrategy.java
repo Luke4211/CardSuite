@@ -27,7 +27,7 @@ public class BlackJackBasicStrategy {
 	 */
 	
 	private final String[][] hardDecisionTable = {
-	/* Hands:             2     3     4     5     6     7     8     9     10    A  */
+        /* Hands:                         2     3     4     5     6     7     8     9     10    A  */
 	/*4-7 */			{"h",  "h",  "h",  "h",  "h",  "h",  "h",  "h",  "h",  "h"  },
 	/* 8  */			{"h",  "h",  "h",  "dh", "dh", "h",  "h",  "h",  "h",  "h"  },
 	/* 9  */			{"dh", "dh", "dh", "dh", "dh", "h",  "h",  "h",  "h",  "h"  },
@@ -46,7 +46,7 @@ public class BlackJackBasicStrategy {
 	 */
 	
 	private final String[][] softDecisionTable = {
-	/* Hands:             2     3     4     5     6     7     8     9     10    A  */
+	/* Hands:                         2     3     4     5     6     7     8     9     10    A  */
 	/* 13 */			{"h" , "h" , "dh", "dh", "dh", "h",  "h",  "h",  "h",  "h" },
 	/* 14 */			{"h" , "h" , "dh", "dh", "dh", "h",  "h",  "h",  "h",  "h" },
 	/* 15 */			{"h" , "h" , "dh", "dh", "dh", "h",  "h",  "h",  "h",  "h" },
@@ -58,7 +58,7 @@ public class BlackJackBasicStrategy {
 	};
 	
 	private final String[][] splitDecisionTable = {
-	/* Hands:             2     3     4     5     6     7     8     9     10    A  */
+	/* Hands:                         2     3     4     5     6     7     8     9     10    A  */
 	/*2's*/   			{"p",  "p",  "p",  "p",  "p",  "p",  "h",  "h",  "h",  "h" },
 	/*3's*/				{"p",  "p",  "p",  "p",  "p",  "p",  "p",  "h",  "h",  "h" },
 	/*4's*/				{"h",  "h",  "p",  "p",  "p",  "h",  "h",  "h",  "h",  "h" },
@@ -84,7 +84,8 @@ public class BlackJackBasicStrategy {
 		int col = this.getCol(card);
 		boolean split = this.isSplit(deck);
 		boolean soft = this.isSoft(deck);	
-		Card top = deck.getCard(0);	
+		Card top = deck.getCard(0);
+		
 		if(split && top.getBlackJackVal() != 10) {
 			row = this.getSplitRow(top);
 			return this.splitDecisionTable[row][col];
@@ -93,6 +94,7 @@ public class BlackJackBasicStrategy {
 			row = this.getSoftRow(pts);
 			return this.softDecisionTable[row][col];
 		} else {
+			
 			row = this.getHardRow(pts);
 			return this.hardDecisionTable[row][col];
 		}
@@ -105,6 +107,7 @@ public class BlackJackBasicStrategy {
 		int sum = 0;
 		boolean val10 = false;
 		ArrayList<Card> aces = new ArrayList<Card>();
+		
 		for(int i = 0; i < hand.size(); i++) {
 			if(hand.getCard(i).getBlackJackVal() == 1) {
 				aces.add(hand.getCard(i));
@@ -126,7 +129,6 @@ public class BlackJackBasicStrategy {
 		}
 		return sum;
 	}
-	
 	/*
 	 * isSoft(deck) returns true if the hand contains
 	 * and ace valued and 10, and false otherwise.
@@ -143,7 +145,6 @@ public class BlackJackBasicStrategy {
 			return false;
 		}
 	}
-	
 	/*
 	 * isSplit(deck) returns true if the hand contains
 	 * only 2 cards which have the same value, and 
@@ -159,9 +160,9 @@ public class BlackJackBasicStrategy {
 				return true;
 			}
 		}
+		
 		return false;
 	}
-	
 	/*
 	 * getHardRow(int) returns the row 
 	 * number for the decision table for
@@ -175,7 +176,6 @@ public class BlackJackBasicStrategy {
 		}
 		return (pts - 7);
 	}
-	
 	/*
 	 * getSoftRow(int) returns the row
 	 * number for the decision table for
@@ -185,6 +185,7 @@ public class BlackJackBasicStrategy {
 		if(pts >= 20) {
 			return 7;
 		}
+		
 		return (pts - 13);
 	}
 	/*
@@ -211,6 +212,7 @@ public class BlackJackBasicStrategy {
 		if(val == 1) {
 			return 9;
 		}
+		
 		return (val - 2);
 	}
 
