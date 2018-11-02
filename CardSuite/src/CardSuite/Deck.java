@@ -1,5 +1,10 @@
 package CardSuite;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.io.IOException;
 import java.util.*;
+
+import javax.swing.ImageIcon;
 /*
  * Deck Class: A simple class which provides all of the functionality of
  * 			   a normal deck of cards.
@@ -17,8 +22,15 @@ import java.util.*;
  * riffle()
  * printDeck()
  */
+
+
+
 public class Deck {
 	private ArrayList<Card> deck;
+	
+	//card dimensions
+	private int x=70;
+	private int y=110;
 	
 	/*
 	 * Constructor which generates a full deck if empty is false, 
@@ -167,28 +179,70 @@ public class Deck {
 		}
 	}
 	
+	public String printDeckGUI() {
+		String n="";
+		for(Card card:this.deck) {
+			n += " " + card.printCardGUI();
+		}
+		return n;
+	}
+	
+	
+	//resize an image to new x y dimensions
+	public ImageIcon resizeImage(int x, int y, String imagePath) {
+		ImageIcon imageIcon = new ImageIcon(MainMenu.class.getResource(imagePath)); // load the image to a imageIcon
+		Image image = imageIcon.getImage(); // transform it 
+		Image newimg = image.getScaledInstance(x, y,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+		imageIcon = new ImageIcon(newimg);  // transform it back
+		return imageIcon;
+	}
+	
+	
 	/*
 	 * The genDeck() method generates a deck of 52 cards,
 	 * 13 of each suit.
 	 */
+
+	
 	private void genDeck() {
+		ImageIcon img=null;
 		for(int i = 1; i<14; i++) {
-			Card tempCard = new Card(i, "Diamonds");
+			try {
+				img = resizeImage(x,y,"/resources/images/" + i +" of "+ "Diamonds.jpg");
+			}catch(Exception e) {
+				System.out.println("error loading " + i + " of " + "Diamonds.jpeg");
+			}
+			Card tempCard = new Card(i, "Diamonds", resizeImage(x,y,"/resources/images/" + i +" of "+ "Diamonds.jpg"));
 			this.deck.add(tempCard);
 		}
 		
 		for(int i = 1; i<14; i++) {
-			Card tempCard = new Card(i, "Clubs");
+			try {
+				img = resizeImage(x,y,"/resources/images/" + i +" of "+ "Clubs.jpg");
+			}catch(Exception e) {
+				System.out.println("error loading " + i + " of " + "Clubs.jpeg");
+			}
+			Card tempCard = new Card(i, "Clubs", img);
 			this.deck.add(tempCard);
 		}
 		
 		for(int i = 1; i<14; i++) {
-			Card tempCard = new Card(i, "Hearts");
+			try {
+				img = resizeImage(x,y,"/resources/images/" + i +" of "+ "Hearts.jpg");
+			}catch(Exception e) {
+				System.out.println("error loading " + i + " of " + "Hearts.jpeg");
+			}
+			Card tempCard = new Card(i, "Hearts", img);
 			this.deck.add(tempCard);
 		}
 		
 		for(int i = 1; i<14; i++) {
-			Card tempCard = new Card(i, "Spades");
+			try {
+				img = resizeImage(x,y,"/resources/images/" + i +" of "+ "Spades.jpg");
+			}catch(Exception e) {
+				System.out.println("error loading " + i + " of " + "Spades.jpeg");
+			}
+			Card tempCard = new Card(i, "Spades", img);
 			this.deck.add(tempCard);
 		}
 		

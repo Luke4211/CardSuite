@@ -1,18 +1,16 @@
 package CardSuite;
-import java.awt.Image;
-import java.awt.image.*;
-import java.util.Scanner;
+
+import javax.swing.ImageIcon;
 
 public class Card {
 	private int value;
 	private String suit;
-	private Image image;
+	private ImageIcon img;
 	
-	public Card(int val, String suit) {
+	public Card(int val, String suit, ImageIcon img) {
 		this.value = val;
 		this.suit = suit;
-		//this.image = img;
-		
+		this.img = img;		
 	}
 	
 	public String getInfo() {
@@ -94,8 +92,29 @@ public class Card {
 		System.out.println(name + " of " + suit);
 	}
 	
-	private void loadImg() {
+	public String printCardGUI() {
+		String name;
+		if(this.value == 1) {
+			name = "Ace";
+		}
+		else if(this.value == 11) {
+			name = "Jack";
+		}
+		else if(this.value == 12) {
+			name = "Queen";
+		}
+		else if(this.value == 13) {
+			name = "King";
+		}
+		else {
+			name = value + "";
+		}
 		
+		return(name + " of " + suit);
+	}
+	
+	public ImageIcon getImg() {
+		return this.img;
 	}
 
 }
