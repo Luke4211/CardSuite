@@ -17,6 +17,23 @@ public class BlackJack {
 	protected boolean isSim;
 	
 	
+	
+	public BlackJack() {
+		this.run = true;
+		this.house = new Deck(false);
+		this.discard = new Deck(true);
+		this.houseMoney = 1000000;
+		this.playerMoney = 5000;
+		this.numHands = 100;
+		this.minBet = 500;
+		this.numPlayers = 1;
+		this.handCount = 0;
+		this.house.shuffle();
+		this.players = new Player[this.numPlayers];
+		this.hiLo = 0;
+		this.addPlayers();
+	}
+	
 	public BlackJack(long dealerMoney, long playerMoney, int numPlayers, int numHands, int minBet) {
 		this.run = true;
 		this.house = new Deck(false);
@@ -31,10 +48,11 @@ public class BlackJack {
 		this.house.shuffle();
 		this.players = new Player[this.numPlayers];
 		this.hiLo = 0;
-		this.addPlayers();
-		
-		
-		
+		this.addPlayers();		
+	}
+	
+	public int getMinBet() {
+		return minBet;
 	}
 	
 	
