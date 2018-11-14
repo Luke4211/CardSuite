@@ -147,6 +147,7 @@ public class Player {
 	public boolean promptToHit(int playerNum, int deckNum, Card dealerCard, Deck pDeck, int count) {
 		String input = "";
 		while(!input.equals("h") && !input.equals("s") ) {
+			pDeck.printDeck();
 			System.out.println("Player " + (playerNum) + ", would you like to hit or stand on deck " + (deckNum) + "? h/s ");
 			input = this.scnr.next();
 		}
@@ -189,6 +190,7 @@ public class Player {
 		long bet = -1;
 		while(bet < 0 || bet%2 != 0 || bet%10 != 0 || bet > money || bet < minBet) {
 			System.out.println("Player " + playerNum + ", please place your bet, even multiples of 10 only.");
+			
 			System.out.println("Minimum bet: " + minBet);
 			bet = scnr.nextLong();
 		}
