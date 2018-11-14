@@ -5,6 +5,6 @@
  * @author Luke
  *
  */
-module cardSuite {
-	requires java.desktop;
-}
+//module cardSuite {
+	//requires java.desktop;
+//}

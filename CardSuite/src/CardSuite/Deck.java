@@ -190,7 +190,7 @@ public class Deck {
 	
 	//resize an image to new x y dimensions
 	public ImageIcon resizeImage(int x, int y, String imagePath) {
-		ImageIcon imageIcon = new ImageIcon(MainMenu.class.getResource(imagePath)); // load the image to a imageIcon
+		ImageIcon imageIcon = new ImageIcon(Deck.class.getResource(imagePath)); // load the image to a imageIcon
 		Image image = imageIcon.getImage(); // transform it 
 		Image newimg = image.getScaledInstance(x, y,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 		imageIcon = new ImageIcon(newimg);  // transform it back
