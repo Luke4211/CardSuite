@@ -21,6 +21,14 @@ public class BlackJackSimulator extends BlackJack {
 		this.timeStart = System.currentTimeMillis();
 		this.timeEnd = 0;
 	}
+	
+	public long getPlayerMoney() {
+		return this.players[0].getMoney();
+	}
+	
+	public long getTimeEnd() {
+		return this.timeEnd;
+	}
 	/*
 	 * (non-Javadoc)
 	 * @see CardSuite.BlackJack#game()

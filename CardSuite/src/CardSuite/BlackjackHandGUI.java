@@ -118,34 +118,21 @@ public class BlackjackHandGUI {
 	}
 	
 	public void hitUntil17GUI() {
-		if(true) {
-			this.hiddenCard = true;
-			int sum = handPts(this.dealer);
-			if(this.soft17()) {
-				this.hitDealer();
+		this.hiddenCard = true;
+		int sum = handPts(this.dealer);
+		if(this.soft17()) {
+			this.hitDealer();
 				
-				sum = handPts(this.dealer);
-			}
-			while(sum<17) {
-				this.hitDealer();				
-				sum = handPts(this.dealer);
-			}
-			if(bust(this.dealer)) {
-				this.dealerBust = true;
-			}
-			if(true) {
-				System.out.println("" + this.isSim);
-				System.out.println("Winning players (if any): ");
-				for(int k = 0; k < this.numPlayers; k++) {
-					for(int l = 0; l < this.players[k].getNumDecks(); l++) {
-						if(this.winner(this.players[k].getDeck(l+1), this.dealer) == 0) {
-							System.out.println("Player " + (k+1) + " Deck " + (l+1));
-						}
-					}
-				}
-			}
-			this.handOver = true;
+			sum = handPts(this.dealer);
 		}
+		while(sum<17) {
+			this.hitDealer();				
+			sum = handPts(this.dealer);
+		}
+		if(bust(this.dealer)) {
+			this.dealerBust = true;
+		}
+		this.handOver = true;
 
 	}
 	//added for GUI
@@ -307,12 +294,9 @@ public class BlackjackHandGUI {
 				this.dealerBust = true;
 			}
 			if(!this.isSim) {
-				System.out.println("" + this.isSim);
-				System.out.println("Winning players (if any): ");
 				for(int k = 0; k < this.numPlayers; k++) {
 					for(int l = 0; l < this.players[k].getNumDecks(); l++) {
 						if(this.winner(this.players[k].getDeck(l+1), this.dealer) == 0) {
-							System.out.println("Player " + (k+1) + " Deck " + (l+1));
 						}
 					}
 				}
@@ -320,7 +304,6 @@ public class BlackjackHandGUI {
 			
 				String pause = "";
 				while(pause.equals("")) {
-					System.out.println("Hit any key then enter to continue...");
 					pause = scnr.next();
 				}
 			}

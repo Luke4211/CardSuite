@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Toolkit;
 
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
@@ -28,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Button;
 import java.awt.Canvas;
 
@@ -48,14 +50,19 @@ public class GUI extends JPanel{
 //	private BlackJackHand hand;
 	private BlackjackHandGUI hand;
 	
+	private Dimension screenSize;
+	private int width;
+	private int height;
+	private int simType = 1;
+	
 	private int currentPlayer;
 	
 	private JButton btnStand;
-	private JLabel lblHand;
-	private JLabel lblHand_1;
-	private JLabel lblHand_2;
-	private JLabel lblHand_3;
-	private JLabel lblDealerHand;
+//	private JLabel lblHand;
+//	private JLabel lblHand_1;
+//	private JLabel lblHand_2;
+//	private JLabel lblHand_3;
+//	private JLabel lblDealerHand;
 	private JLabel lblBalance;
 	private JButton btnDouble;
 	private JButton btnSplit;
@@ -68,21 +75,29 @@ public class GUI extends JPanel{
 	private JLabel lblCurrentBet;
 	private JLayeredPane board;
 	private JSlider slider;
-	private JRadioButton rd1,rd2,rd3,rd4;
+	private JRadioButton rd1,rd2;
 	
 	
 	//card slots
-	private JLabel[] playerSlot;
-	private JLabel[] splitSlot;// = new JLabel[10];
+	private JLabel[] playerOneSlot;
+	private JLabel[] playerTwoSlot;
+	private JLabel[] playerThreeSlot;
+	private JLabel[] playerFourSlot;
+	private JLabel[] splitSlotOne;
+	private JLabel[] splitSlotTwo;
+	private JLabel[] splitSlotThree;
+	private JLabel[] splitSlotFour;// = new JLabel[10];
 	private JLabel[] dealerSlot;// = new JLabel[10];
-	//private MainMenu menu;
 	
 	private JLayeredPane mainMenu;
 	private JTextField fieldNumPlayers;
 	private JTextField fieldDealerMoney;
 	private JTextField fieldPlayerMoney;
 	private JTextField fieldMinBet;
+	private JTextField fieldNumHands;
+	private JTextField fieldSimulation;
 	private Button start;
+	private Button simulation;
 	
 	
 	//game info
@@ -90,14 +105,24 @@ public class GUI extends JPanel{
 	private JLabel lblDealerMoney;
 	private JLabel lblPlayerMoney;
 	private JLabel lblMinBet;
+	private JLabel lblNumHands;
+	private JLabel lblSimulation;
 	private long dealerMoney;
 	private long playerMoney;
+	private long playerStartMoney = 0;
 	private int numPlayers;
 	private int minBet;
 	private int numHands=1000;
-	private JLabel lblYourHand;
-	private JLabel lblSplitHand;
+	private JLabel lblHandOne;
+	private JLabel lblHandTwo;
+	private JLabel lblHandThree;
+	private JLabel lblHandFour;
+	private JLabel lblSplitHandOne;
+	private JLabel lblSplitHandTwo;
+	private JLabel lblSplitHandThree;
+	private JLabel lblSplitHandFour;
 	private JLabel lblDealerHand_1;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -118,8 +143,7 @@ public class GUI extends JPanel{
 	 * Create the application.
 	 */
 	public GUI() {
-		initialize();
-		
+		initialize();		
 	}
 	
 
@@ -128,38 +152,46 @@ public class GUI extends JPanel{
 	 */
 	private void initialize(){	
 		game = new BlackJack();
-		//game = new BlackJack(dealerMoney, playerMoney, numPlayers, 10000, minBet);
+//		game = new BlackJack(dealerMoney, playerMoney, numPlayers, 10000, minBet);
 		hand = new BlackjackHandGUI(game.getInfo());
 //		hand = new BlackJackHand(game.getInfo());
+		
+		//get the resolution of the user's monitor
+		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		width = (int) screenSize.getWidth();
+		height = (int) screenSize.getHeight();
 		
 		
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 872, 567);
+		frame.setBounds(100, 100, width, height);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		frame.setUndecorated(true);
 		frame.getContentPane().setLayout(null);	
 		
 		board = new JLayeredPane();
 		board.setOpaque(true);
 		board.setBackground(new Color(34,150,34));
-		board.setBounds(0, -31, 850, 511);
+		board.setBounds(0, -31, width, height);
+		//frame.getContentPane().add(board);
 
 		
 		mainMenu = new JLayeredPane();
-		mainMenu.setBounds(0, 0, 850, 511);
+		mainMenu.setBounds(0, 0, width, height);
 		frame.getContentPane().add(mainMenu);
 		
 		//betting slider
 		slider = new JSlider();
 		slider.setToolTipText("");
 		slider.setMajorTickSpacing(1000);
-		slider.setBounds(32, 404, 213, 54);
+		slider.setBounds(32, height - 170, 213, 54);
 		board.add(slider);		
 		lblMinBet = new JLabel("Min Bet: ");
-		lblMinBet.setBounds(32, 390, 89, 14);
+		lblMinBet.setBounds(32, height - 220, 89, 14);
 		board.add(lblMinBet);		
 		lblMaxBet = new JLabel("Max Bet: " + hand.getPlayers(currentPlayer).getMoney());
-		lblMaxBet.setBounds(159, 390, 130, 14);
+		lblMaxBet.setBounds(159, height - 220, 130, 14);
 		board.add(lblMaxBet);
 		
 		
@@ -173,58 +205,34 @@ public class GUI extends JPanel{
            }
         };
         
-        slider.addChangeListener(listener);
-		
-		
-		//Text version
-//		lblHand = new JLabel("Hand 1:");
-//		lblHand.setFont(new Font("Tahoma", Font.PLAIN, 11));
-//		lblHand.setBounds(32, 32, 437, 54);
-//		board.add(lblHand);		
-//		lblHand_1 = new JLabel("Hand 2:");
-//		lblHand_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
-//		lblHand_1.setBounds(32, 97, 437, 54);
-//		board.add(lblHand_1);		
-//		lblHand_2 = new JLabel("Hand 3:");
-//		lblHand_2.setFont(new Font("Tahoma", Font.PLAIN, 11));
-//		lblHand_2.setBounds(32, 162, 437, 54);
-//		board.add(lblHand_2);		
-//		lblHand_3 = new JLabel("Hand 4:");
-//		lblHand_3.setFont(new Font("Tahoma", Font.PLAIN, 11));
-//		lblHand_3.setBounds(32, 227, 437, 54);
-//		board.add(lblHand_3);		
-//		lblDealerHand = new JLabel("Dealer Hand:");
-//		lblDealerHand.setFont(new Font("Tahoma", Font.PLAIN, 11));
-//		lblDealerHand.setBounds(485, 142, 339, 54);
-//		board.add(lblDealerHand);
-		
+        slider.addChangeListener(listener);		
 				
 		
 		//select hand to operate on
 		rd1 = new JRadioButton("1");
-		rd1.setBounds(629, 417, 39, 23);
+		rd1.setBounds(629, height - 150, 39, 23);
 		board.add(rd1);
 		buttonGroup.add(rd1);
 		rd1.setSelected(true);
 		rd2 = new JRadioButton("2");
-		rd2.setBounds(670, 417, 39, 23);
+		rd2.setBounds(670, height - 150, 39, 23);
 		board.add(rd2);
 		buttonGroup.add(rd2);
 		rd2.setEnabled(false);
-		rd3 = new JRadioButton("3");
-		rd3.setBounds(711, 417, 39, 23);
-		board.add(rd3);
-		buttonGroup.add(rd3);
-		rd3.setEnabled(false);
-		rd4 = new JRadioButton("4");
-		rd4.setBounds(752, 417, 39, 23);
-		board.add(rd4);
-		buttonGroup.add(rd4);
-		rd4.setEnabled(false);
+//		rd3 = new JRadioButton("3");
+//		rd3.setBounds(711, height - 150, 39, 23);
+//		board.add(rd3);
+//		buttonGroup.add(rd3);
+//		rd3.setEnabled(false);
+//		rd4 = new JRadioButton("4");
+//		rd4.setBounds(752, height - 150, 39, 23);
+//		board.add(rd4);
+//		buttonGroup.add(rd4);
+//		rd4.setEnabled(false);
 		
-		//Player Money Balance Label
+		//Player Money Balance Labels
 		lblBalance = new JLabel("Balance:" + hand.getPlayers(currentPlayer).getMoney());
-		lblBalance.setBounds(32, 469, 99, 14);
+		lblBalance.setBounds(32, 50, 99, 14);
 		board.add(lblBalance);
 		
 		//Split Button
@@ -242,21 +250,21 @@ public class GUI extends JPanel{
 				
 //				lblHand.setText(hand.getPlayers(currentPlayer).getDeck(1).printDeckGUI() +" Value:" +  hand.handPts(hand.getPlayers(currentPlayer).getDeck(1)));
 //				lblHand_1.setText(hand.getPlayers(currentPlayer).getDeck(2).printDeckGUI() +" Value:" +  hand.handPts(hand.getPlayers(currentPlayer).getDeck(2)));
-				drawPlayerHand();
-				drawSplitHand();				
+				drawPlayerHand(currentPlayer+1);
+				drawSplitHand(currentPlayer+1);				
 				btnSplit.setEnabled(false);
 				
 				if(hand.getPlayers(currentPlayer).getNumDecks()==2) {
 					rd2.setEnabled(true);
-				}else if(hand.getPlayers(currentPlayer).getNumDecks()==3) {
-					rd3.setEnabled(true);
-				}else if(hand.getPlayers(currentPlayer).getNumDecks()==4) {
-					rd4.setEnabled(true);
-				}
-					
+				}else if(hand.getPlayers(currentPlayer).getNumDecks()==3) {}
+//					rd3.setEnabled(true);
+//				}else if(hand.getPlayers(currentPlayer).getNumDecks()==4) {
+//					rd4.setEnabled(true);
+//				}
+//					
 			}
 		});
-		btnSplit.setBounds(516, 453, 99, 43);
+		btnSplit.setBounds(516, height - 100, 99, 43);
 		board.add(btnSplit);
 		
 		//Double Down Button
@@ -271,12 +279,12 @@ public class GUI extends JPanel{
 				}else if(rd2.isSelected()){
 					doubleDown(card, 2);
 //					lblHand_1.setText(hand.getPlayers(currentPlayer).getDeck(2).printDeckGUI() +" Value:" +  hand.handPts(hand.getPlayers(currentPlayer).getDeck(2)));
-				}else if(rd3.isSelected()) {
-					doubleDown(card, 3);
-//					lblHand_2.setText(hand.getPlayers(currentPlayer).getDeck(3).printDeckGUI() +" Value:" +  hand.handPts(hand.getPlayers(currentPlayer).getDeck(3)));
-				}else if(rd4.isSelected()) {
-					doubleDown(card, 4);
-//					lblHand_3.setText(hand.getPlayers(currentPlayer).getDeck(4).printDeckGUI() +" Value:" +  hand.handPts(hand.getPlayers(currentPlayer).getDeck(4)));
+//				}else if(rd3.isSelected()) {
+//					doubleDown(card, 3);
+////					lblHand_2.setText(hand.getPlayers(currentPlayer).getDeck(3).printDeckGUI() +" Value:" +  hand.handPts(hand.getPlayers(currentPlayer).getDeck(3)));
+//				}else if(rd4.isSelected()) {
+//					doubleDown(card, 4);
+////					lblHand_3.setText(hand.getPlayers(currentPlayer).getDeck(4).printDeckGUI() +" Value:" +  hand.handPts(hand.getPlayers(currentPlayer).getDeck(4)));
 				}else {
 					JOptionPane.showMessageDialog(frame,
 						    "Choose a deck to double down.");
@@ -284,7 +292,7 @@ public class GUI extends JPanel{
 				end();
 			}
 		});
-		btnDouble.setBounds(421, 453, 89, 42);
+		btnDouble.setBounds(421, height - 100, 89, 42);
 		board.add(btnDouble);
 		
 		//Hit Button
@@ -294,29 +302,25 @@ public class GUI extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				if(rd1.isSelected()) {
 					hand.hit(currentPlayer, 1);
-					drawPlayerHand();
+					drawPlayerHand(currentPlayer+1);
+					drawSplitHand(currentPlayer+1);
 //					lblHand.setText(hand.getPlayers(currentPlayer).getDeck(1).printDeckGUI() +" Value:" +  hand.handPts(hand.getPlayers(currentPlayer).getDeck(1)));
 				}else if(rd2.isSelected()){
 					hand.hit(currentPlayer, 2);
-					drawSplitHand();
+					drawPlayerHand(currentPlayer+1);
+					drawSplitHand(currentPlayer+1);
 //					lblHand_1.setText(hand.getPlayers(currentPlayer).getDeck(2).printDeckGUI() +" Value:" +  hand.handPts(hand.getPlayers(currentPlayer).getDeck(2)));
-				}else if(rd3.isSelected()) {
-					hand.hit(currentPlayer, 3);
-//					lblHand_2.setText(hand.getPlayers(currentPlayer).getDeck(3).printDeckGUI() +" Value:" +  hand.handPts(hand.getPlayers(currentPlayer).getDeck(3)));
-				}else if(rd4.isSelected()){
-					hand.hit(currentPlayer, 4);
-//					lblHand_3.setText(hand.getPlayers(currentPlayer).getDeck(4).printDeckGUI() +" Value:" +  hand.handPts(hand.getPlayers(currentPlayer).getDeck(4)));
 				}else {
 					JOptionPane.showMessageDialog(frame,
 						    "Choose a deck to hit.");
 				}
 				if(hand.bust(hand.getPlayers(currentPlayer).getDeck(1)) || hand.bust(hand.getPlayers(currentPlayer).getDeck(2))){
-					JOptionPane.showMessageDialog(frame, "Deck 1 busted.");
+					JOptionPane.showMessageDialog(frame, "You busted.");
 					end();
 				}
 			}
 		});
-		btnHit.setBounds(733, 453, 99, 43);
+		btnHit.setBounds(733, height - 100, 99, 43);
 		board.add(btnHit);
 		
 		//Stand Button
@@ -327,7 +331,7 @@ public class GUI extends JPanel{
 				end();
 			}
 		});
-		btnStand.setBounds(625, 453, 99, 43);
+		btnStand.setBounds(625, height - 100, 99, 43);
 		board.add(btnStand);
 		
 		//betting
@@ -339,31 +343,18 @@ public class GUI extends JPanel{
 					JOptionPane.showMessageDialog(frame,"You're out of money.");
 				}else {					
 				hand.getPlayers(currentPlayer).bet(slider.getValue());
-				lblBalance.setText("Balance:" + hand.getPlayers(currentPlayer).getMoney());
+				lblBalance.setText("Balance:" + hand.getPlayers(currentPlayer).getMoney());				
 				btnBet.setEnabled(false);
-				
-				//begin the next hand
-				hand.initGUI();
-//				hand.getPlayers(currentPlayer).getDeck(1).printDeck();
-				drawPlayerHand();
-				drawDealerHand();
-				
-				
-//				lblHand.setText(hand.getPlayers(currentPlayer).getDeck(1).printDeckGUI() +" Value:" +  hand.handPts(hand.getPlayers(currentPlayer).getDeck(1)));
-//				lblDealerHand.setText("Dealer Top Card: " + hand.printDealerCard());
-				
+				placeBets();				
 				if(hand.canSplit(hand.getPlayers(currentPlayer).getDeck(1)))
-					btnSplit.setEnabled(true);
-				else
 					btnSplit.setEnabled(false);
-				btnStand.setEnabled(true);
-				btnHit.setEnabled(true);
-				btnDouble.setEnabled(true);
+				else
+					btnSplit.setEnabled(false);				
 				rd1.setEnabled(true);
 				}
 			}
 		});
-		btnBet.setBounds(93, 356, 89, 23);
+		btnBet.setBounds(93, height - 200, 89, 23);
 		board.add(btnBet);
 		
 		/*Get insurance button*/
@@ -374,7 +365,7 @@ public class GUI extends JPanel{
 			//add functionality
 			}
 		});
-		btnGetInsurance.setBounds(281, 449, 130, 23);
+		btnGetInsurance.setBounds(281, height - 100, 130, 23);
 		board.add(btnGetInsurance);
 		
 		
@@ -386,7 +377,7 @@ public class GUI extends JPanel{
 			//add functionality;
 			}
 		});
-		btnSurrender.setBounds(281, 473, 130, 23);
+		btnSurrender.setBounds(281, height - 70, 130, 23);
 		board.add(btnSurrender);
 		
 		//Next Hand Button
@@ -395,34 +386,52 @@ public class GUI extends JPanel{
 			public void actionPerformed(ActionEvent e) {								
 				btnBet.setEnabled(true);
 				slider.setMinimum(minBet);
-				slider.setMaximum((int)(hand.getPlayers(currentPlayer).getMoney()));
-				
-				resetLabels();
-				resetCardSlots();
+				slider.setMaximum((int)(hand.getPlayers(currentPlayer).getMoney()));				
+				nextHand();			
 				btnNextHand.setEnabled(false);
 			}
 		});
-		btnNextHand.setBounds(303, 404, 193, 36);
+		btnNextHand.setBounds(width/2, height - 100, 193, 36);
 		board.add(btnNextHand);
 		
 		JLabel lblChooseHand = new JLabel("Choose Hand:");
-		lblChooseHand.setBounds(534, 421, 89, 14);
+		lblChooseHand.setBounds(534, height - 150, 89, 14);
 		board.add(lblChooseHand);
 		
 		lblCurrentBet = new JLabel("Current bet: " + hand.getPlayers(currentPlayer).getBet());
-		lblCurrentBet.setBounds(141, 469, 130, 14);
+		lblCurrentBet.setBounds(101, height - 240, 130, 14);
 		board.add(lblCurrentBet);	
 		
-		lblYourHand = new JLabel("Player " + (currentPlayer + 1) + " | Value: ");		
-		lblYourHand.setBounds(240, 348, 218, 14);
-		board.add(lblYourHand);		
-		lblSplitHand = new JLabel("");
-		lblSplitHand.setBounds(440, 348, 2, 14);
-		board.add(lblSplitHand);
+		lblHandOne = new JLabel("Player 1 Hand 1 | Value: ");		
+		lblHandOne.setBounds(240, height - 300, 218, 14);
+		board.add(lblHandOne);		
+		lblHandTwo = new JLabel("Player 2 Hand 1 | Value: ");		
+		lblHandTwo.setBounds(640, height - 300, 218, 14);
+		board.add(lblHandTwo);	
+		lblHandThree = new JLabel("Player 3 Hand 1 | Value: ");		
+		lblHandThree.setBounds(1040, height - 300, 218, 14);
+		board.add(lblHandThree);	
+		lblHandFour = new JLabel("Player 4 Hand 1 | Value: ");		
+		lblHandFour.setBounds(1440, height - 300, 218, 14);
+		board.add(lblHandFour);
+		
+		lblSplitHandOne = new JLabel("");
+		lblSplitHandOne.setBounds(440, height - 300, 2, 14);
+		board.add(lblSplitHandOne);
+		lblSplitHandTwo = new JLabel("");
+		lblSplitHandTwo.setBounds(840, height - 300, 2, 14);
+		board.add(lblSplitHandTwo);
+		lblSplitHandThree = new JLabel("");
+		lblSplitHandThree.setBounds(1240, height - 300, 2, 14);
+		board.add(lblSplitHandThree);
+		lblSplitHandFour = new JLabel("");
+		lblSplitHandFour.setBounds(1640, height - 300, 2, 14);
+		board.add(lblSplitHandFour);
+
 		
 
 		lblDealerHand_1 = new JLabel("Dealer Hand | Value: ");
-		lblDealerHand_1.setBounds(534, 165, 190, 14);
+		lblDealerHand_1.setBounds(width/2 - 35, height/2 - 100, 190, 14);
 		board.add(lblDealerHand_1);
 
 		
@@ -453,7 +462,17 @@ public class GUI extends JPanel{
 	            frame.repaint();
 	            mntmNewGame.setEnabled(false);
 			}
-		});	
+		});
+		
+		JMenuItem mntmExitGame = new JMenuItem("Exit Game");
+		mnGame.add(mntmExitGame);
+		mntmExitGame.setEnabled(true);
+		mntmExitGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+			}
+		});
+		
 		
 		
 		/*********DRAW MAIN MENU**************/		
@@ -470,44 +489,86 @@ public class GUI extends JPanel{
 			}
 		});
 		start.setFont(new Font("Dialog", Font.PLAIN, 27));
-		start.setBounds(255, 382, 330, 71);
+		start.setBounds(width/2 - 380, height/2, 330, 71);
 		mainMenu.add(start);
 		
+		
+		simulation = new Button("Start Simulation");
+		simulation.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				numHands = Integer.parseInt(fieldNumHands.getText());
+				simType = Integer.parseInt(fieldSimulation.getText());
+				BlackJackSimulator simulation = new BlackJackSimulator(10000000000L, 1000000000L, 3, numHands, 100, simType);
+				playerStartMoney = simulation.getPlayerMoney();
+				simulation.game();
+				
+				//dispaly results
+				JOptionPane.showMessageDialog(frame,"                   Results:\n\n"+
+											"Player Starting Money: $" + playerStartMoney + 
+											"\nPlayer Ending Money: $"  + simulation.getPlayerMoney() +
+											"\n\nNumber of Hands: " + numHands +
+											"\n\nElapsed Time(seconds): " + simulation.getTimeEnd());
+				
+			}
+		});
+		simulation.setFont(new Font("Dialog", Font.PLAIN, 27));
+		simulation.setBounds(width/2, height/2, 330, 71);
+		mainMenu.add(simulation);
+		
+		
+		fieldSimulation = new JTextField("1");
+		fieldSimulation.setColumns(10);
+		fieldSimulation.setBounds(width/2+100, height/3 + 70, 146, 26);
+		mainMenu.add(fieldSimulation);
+		
+		lblSimulation = new JLabel("Enter the Type of Simulation: 1 for Basic | 2 for HiLo | 3 for Illustrious 18");
+		lblSimulation.setBounds(width/2 , height/3 + 40, 400, 26);
+		mainMenu.add(lblSimulation);
+		
+		fieldNumHands = new JTextField("1000");
+		fieldNumHands.setColumns(10);
+		fieldNumHands.setBounds(width/2+100, height/3 + 130, 146, 26);
+		mainMenu.add(fieldNumHands);
+		
 		fieldNumPlayers = new JTextField("1");
-		fieldNumPlayers.setBounds(515, 99, 146, 26);
+		fieldNumPlayers.setBounds(width/2-200, height/3, 146, 26);
 		mainMenu.add(fieldNumPlayers);
 		fieldNumPlayers.setColumns(10);
 		
 		fieldDealerMoney = new JTextField("1000000");
 		fieldDealerMoney.setColumns(10);
-		fieldDealerMoney.setBounds(515, 141, 146, 26);
+		fieldDealerMoney.setBounds(width/2 - 200, height/3 + 40, 146, 26);
 		mainMenu.add(fieldDealerMoney);
 		
 		fieldPlayerMoney = new JTextField("5000");
 		fieldPlayerMoney.setColumns(10);
-		fieldPlayerMoney.setBounds(515, 186, 146, 26);
+		fieldPlayerMoney.setBounds(width/2 - 200, height/3 + 80, 146, 26);
 		mainMenu.add(fieldPlayerMoney);
 		
 		fieldMinBet = new JTextField("500");
 		fieldMinBet.setColumns(10);
-		fieldMinBet.setBounds(515, 228, 146, 26);
+		fieldMinBet.setBounds(width/2 - 200, height/3 + 120, 146, 26);
 		mainMenu.add(fieldMinBet);
 		
+		lblNumHands = new JLabel("Enter Number of Hands to Simulate");
+		lblNumHands.setBounds(width/2 + 70, height/3 + 100, 207, 23);
+		mainMenu.add(lblNumHands);
 		
-		lblNumPlayers = new JLabel("Enter Number of Players:");
-		lblNumPlayers.setBounds(308, 101, 207, 23);
+		
+		lblNumPlayers = new JLabel("Enter Number of Players(up to 4):");
+		lblNumPlayers.setBounds(width/2 - 400, height/3, 207, 23);
 		mainMenu.add(lblNumPlayers);
 		
 		lblDealerMoney = new JLabel("Enter Dealer Money:");
-		lblDealerMoney.setBounds(308, 144, 207, 23);
+		lblDealerMoney.setBounds(width/2 - 400, height/3 + 40, 207, 23);
 		mainMenu.add(lblDealerMoney);
 		
 		lblPlayerMoney = new JLabel("Enter Player Money:");
-		lblPlayerMoney.setBounds(308, 189, 207, 23);
+		lblPlayerMoney.setBounds(width/2 - 400, height/3 + 80, 207, 23);
 		mainMenu.add(lblPlayerMoney);
 		
 		lblMinBet = new JLabel("Enter the Minimum Bet:");
-		lblMinBet.setBounds(308, 231, 207, 23);
+		lblMinBet.setBounds(width/2 - 400, height/3 + 120, 207, 23);
 		mainMenu.add(lblMinBet);
 		
 		createCardSlots();
@@ -519,57 +580,168 @@ public class GUI extends JPanel{
 	}
 	
 	
-	
+	//createCardSlots() creates the card slots for the card images to be drawn to
 	private void createCardSlots(){
-		playerSlot=new JLabel[10];
+		playerOneSlot=new JLabel[10];
+		playerTwoSlot=new JLabel[10];
+		playerThreeSlot=new JLabel[10];
+		playerFourSlot=new JLabel[10];
 		dealerSlot=new JLabel[10];
-		splitSlot=new JLabel[10];
+		splitSlotOne=new JLabel[10];
+		splitSlotTwo=new JLabel[10];
+		splitSlotThree=new JLabel[10];
+		splitSlotFour=new JLabel[10];
 		int x=0;		
         for (int i=0;i<10;i++){        	
-        	playerSlot[i]=new JLabel();
-        	playerSlot[i].setBounds(250+x,230,70,110);        	
-        	dealerSlot[i]=new JLabel();
-        	dealerSlot[i].setBounds(550+x,50,70,110);        	
-        	splitSlot[i]=new JLabel();
-        	splitSlot[i].setBounds(450+x,230,70,110);
+        	playerOneSlot[i]=new JLabel();
+        	playerOneSlot[i].setBounds(250+x, height - 420,70,110);
+        	playerTwoSlot[i]=new JLabel();
+        	playerTwoSlot[i].setBounds(650+x, height - 420,70,110);  
+        	playerThreeSlot[i]=new JLabel();
+        	playerThreeSlot[i].setBounds(1050+x, height - 420,70,110);  
+        	playerFourSlot[i]=new JLabel();
+        	playerFourSlot[i].setBounds(1450+x, height - 420,70,110);  
         	
-        	board.add(playerSlot[i]);
-        	board.moveToFront(playerSlot[i]);        	
+        	dealerSlot[i]=new JLabel();
+        	dealerSlot[i].setBounds(width/2 - 35+x,height/2 - 220,70,110);
+        	
+        	splitSlotOne[i]=new JLabel();
+        	splitSlotOne[i].setBounds(450+x, height - 420,70,110);
+        	splitSlotTwo[i]=new JLabel();
+        	splitSlotTwo[i].setBounds(850+x, height - 420,70,110);
+        	splitSlotThree[i]=new JLabel();
+        	splitSlotThree[i].setBounds(1250+x, height - 420,70,110);
+        	splitSlotFour[i]=new JLabel();
+        	splitSlotFour[i].setBounds(1650+x, height - 420,70,110);
+        	
+        	board.add(playerOneSlot[i]);
+        	board.moveToFront(playerOneSlot[i]);
+        	board.add(playerTwoSlot[i]);
+        	board.moveToFront(playerTwoSlot[i]); 
+        	board.add(playerThreeSlot[i]);
+        	board.moveToFront(playerThreeSlot[i]); 
+        	board.add(playerFourSlot[i]);
+        	board.moveToFront(playerFourSlot[i]);
+        	
         	board.add(dealerSlot[i]);
-        	board.moveToFront(dealerSlot[i]);        	
-        	board.add(splitSlot[i]);
-        	board.moveToFront(splitSlot[i]);
+        	board.moveToFront(dealerSlot[i]);
+        	
+        	board.add(splitSlotOne[i]);
+        	board.moveToFront(splitSlotOne[i]);
+        	board.add(splitSlotTwo[i]);
+        	board.moveToFront(splitSlotTwo[i]);
+        	board.add(splitSlotThree[i]);
+        	board.moveToFront(splitSlotThree[i]);
+        	board.add(splitSlotFour[i]);
+        	board.moveToFront(splitSlotFour[i]);
         	x+=25;
         }
     }
 	
-	private void resetCardSlots() {
-		for(int i=0;i<playerSlot.length;i++) {
-			playerSlot[i].setIcon(null);			
-			playerSlot[i].revalidate();
+	
+	//resetPlayerSlots resets all player's hands to null
+	private void resetPlayerSlots() {
+			for(int i=0;i<10;i++) {			
+				playerOneSlot[i].setIcon(null);			
+				playerOneSlot[i].revalidate();			
+				playerTwoSlot[i].setIcon(null);			
+				playerTwoSlot[i].revalidate();			
+				playerThreeSlot[i].setIcon(null);			
+				playerThreeSlot[i].revalidate();			
+				playerFourSlot[i].setIcon(null);			
+				playerFourSlot[i].revalidate();			
+				splitSlotOne[i].setIcon(null);
+				splitSlotOne[i].revalidate();
+				splitSlotTwo[i].setIcon(null);
+				splitSlotTwo[i].revalidate();
+				splitSlotThree[i].setIcon(null);
+				splitSlotThree[i].revalidate();
+				splitSlotFour[i].setIcon(null);
+				splitSlotFour[i].revalidate();
 			
-			dealerSlot[i].setIcon(null);
-			dealerSlot[i].revalidate();	
-			
-			splitSlot[i].setIcon(null);
-			splitSlot[i].revalidate();
 		}
 	}
 	
-    private void drawPlayerHand(){
-    	for(int i=0;i<hand.getPlayers(currentPlayer).getDeck(1).size();i++){
-    		playerSlot[i].setIcon(hand.getPlayers(currentPlayer).getDeck(1).getCard(i).getImg());
-    		lblYourHand.setText("Player " + (currentPlayer + 1) + "Hand 1 | Value: " + hand.handPts(hand.getPlayers(currentPlayer).getDeck(1)));
+	//resetCardSlots() resets the dealer's hand to null
+	private void resetCardSlots() {
+		for(int i=0;i<10;i++) {
+			dealerSlot[i].setIcon(null);
+			dealerSlot[i].revalidate();
+		}
+	}
+	
+	
+	//drawAllHands() draws all player hands to the board
+	private void drawAllHands() {
+		for(int i = 0;i<this.numPlayers;i++) {
+			drawPlayerHand(i+1);
+		}
+	}
+	
+	
+	//drawPlayerHand() draws a specific players hand to the board
+    private void drawPlayerHand(int player){
+    	switch(player) {
+    	case 1:
+    		for(int i=0;i<hand.getPlayers(0).getDeck(1).size();i++){
+        		playerOneSlot[i].setIcon(hand.getPlayers(0).getDeck(1).getCard(i).getImg());
+        		lblHandOne.setText("Player 1 Hand 1 | Value: " + hand.handPts(hand.getPlayers(0).getDeck(1)));
+        	}
+    		break;
+    	case 2:
+    		for(int i=0;i<hand.getPlayers(1).getDeck(1).size();i++){
+        		playerTwoSlot[i].setIcon(hand.getPlayers(1).getDeck(1).getCard(i).getImg());
+        		lblHandTwo.setText("Player 2 Hand 1 | Value: " + hand.handPts(hand.getPlayers(1).getDeck(1)));
+        	}
+    		break;
+    	case 3:
+    		for(int i=0;i<hand.getPlayers(2).getDeck(1).size();i++){
+        		playerThreeSlot[i].setIcon(hand.getPlayers(2).getDeck(1).getCard(i).getImg());
+        		lblHandThree.setText("Player 3 Hand 1 | Value: " + hand.handPts(hand.getPlayers(2).getDeck(1)));
+        	}
+    		break;
+    	case 4:
+    		for(int i=0;i<hand.getPlayers(3).getDeck(1).size();i++){
+        		playerFourSlot[i].setIcon(hand.getPlayers(3).getDeck(1).getCard(i).getImg());
+        		lblHandFour.setText("Player 4 Hand 1 | Value: " + hand.handPts(hand.getPlayers(3).getDeck(1)));
+        	}
+    		break;
     	}
+    	
     }
     
-    private void drawSplitHand(){
-    	for(int i=0;i<hand.getPlayers(currentPlayer).getDeck(2).size();i++){
-    		splitSlot[i].setIcon(hand.getPlayers(currentPlayer).getDeck(2).getCard(i).getImg());
-    		lblSplitHand.setText("Player " + (currentPlayer + 1) + "Hand 2 | Value: " + hand.handPts(hand.getPlayers(currentPlayer).getDeck(2)));
+    //drawSplitHand() draws the specified player's second hand to the board when they choose to split
+    private void drawSplitHand(int player){
+    	switch(player) {
+    		case 1:
+    			for(int i=0;i<hand.getPlayers(currentPlayer).getDeck(2).size();i++){
+    				splitSlotOne[i].setIcon(hand.getPlayers(currentPlayer).getDeck(2).getCard(i).getImg());
+    				lblSplitHandOne.setText("player 1 Hand 2 | Value: " + hand.handPts(hand.getPlayers(currentPlayer).getDeck(2)));
+    			}
+    			break;
+    		case 2:
+    			for(int i=0;i<hand.getPlayers(currentPlayer).getDeck(2).size();i++){
+    	    		splitSlotTwo[i].setIcon(hand.getPlayers(currentPlayer).getDeck(2).getCard(i).getImg());
+    	    		lblSplitHandOne.setText("player 2 Hand 2 | Value: " + hand.handPts(hand.getPlayers(currentPlayer).getDeck(2)));
+    	    	}
+    			break;
+    		case 3:
+    			for(int i=0;i<hand.getPlayers(currentPlayer).getDeck(2).size();i++){
+    	    		splitSlotThree[i].setIcon(hand.getPlayers(currentPlayer).getDeck(2).getCard(i).getImg());
+    	    		lblSplitHandOne.setText("player 3 Hand 2 | Value: " + hand.handPts(hand.getPlayers(currentPlayer).getDeck(2)));
+    	    	}
+    			break;
+    		case 4:
+    			for(int i=0;i<hand.getPlayers(currentPlayer).getDeck(2).size();i++){
+    	    		splitSlotFour[i].setIcon(hand.getPlayers(currentPlayer).getDeck(2).getCard(i).getImg());
+    	    		lblSplitHandOne.setText("player 4 Hand 2 | Value: " + hand.handPts(hand.getPlayers(currentPlayer).getDeck(2)));
+    	    	}
+    			break;
     	}
+    	
     }
     
+    //drawDealerHand() draws the dealer's hand to the board
     private void drawDealerHand() {
     	if(hand.getHandOver()==false) {
     		if(hand.getDealerCard()==1) {
@@ -588,12 +760,7 @@ public class GUI extends JPanel{
     		}
     	}
     }
-    
-//	lblNewLabel_2 = new JLabel("New label");
-//	lblNewLabel_2.setIcon(new ImageIcon(GUI.class.getResource("/resources/images/purple_back.jpg")));
-//	lblNewLabel_2.setBounds(550, 50, 70, 110);
-//	board.add(lblNewLabel_2);
-    
+   
 	
 	//newGame() starts a new game with the same game settings
 	private void newGame() {
@@ -611,9 +778,8 @@ public class GUI extends JPanel{
 	}
 	
 	
-	
-	private void resetButtons() {
-		btnNextHand.setEnabled(true);
+	//resetButtons() disables all buttons except the next hand button
+	private void resetButtons() {		
 		btnSurrender.setEnabled(false);
 		btnGetInsurance.setEnabled(false);
 		btnHit.setEnabled(false);
@@ -621,44 +787,87 @@ public class GUI extends JPanel{
 		btnSplit.setEnabled(false);
 		btnBet.setEnabled(false);
 		btnStand.setEnabled(false);
+		btnNextHand.setEnabled(true);
 	}
+	
+	
+	//resetLabels() resets all labels to default
 	private void resetLabels() {
-//		lblHand.setText("Hand 1: ");
-//		lblHand_1.setText("Hand 2: ");
-//		lblHand_2.setText("Hand 3: ");
-//		lblHand_3.setText("Hand 4: ");
-//		lblDealerHand.setText("Dealer top card: ");
 		lblBalance.setText("Balance:" + hand.getPlayers(currentPlayer).getMoney());
 		lblMinBet.setText("Min Bet: " + minBet);
 		lblMaxBet.setText("Max Bet: " + hand.getPlayers(currentPlayer).getMoney());
-		lblYourHand.setText("Player " + (currentPlayer + 1) + " | Value: ");
-		lblYourHand.setText("");
+		lblHandOne.setText("Player 1 | Value: ");
+		lblHandTwo.setText("Player 2 | Value: ");
+		lblHandThree.setText("Player 3 | Value: ");
+		lblHandFour.setText("Player 4 | Value: ");
+		lblSplitHandOne.setText(null);
+		lblSplitHandTwo.setText(null);
+		lblSplitHandThree.setText(null);
+		lblSplitHandFour.setText(null);
 		lblDealerHand_1.setText("Dealer Hand | Value: ");
 		resetCardSlots();
 		rd1.setSelected(true);
 		hand.setHandOver(false);		
 	}
 	
-	private void end() {
-		hand.hitUntil17GUI();//player is winning when dealer's original hand is >= 17 and < 21 and dealer hand is > player hand
-		drawPlayerHand();
-		drawDealerHand();
-		System.out.println(hand.handPts(hand.getDealerDeck()));
-		if(hand.winner(hand.getPlayers(currentPlayer).getDeck(1),hand.getDealerDeck())==0) {
-			JOptionPane.showMessageDialog(frame,"You won! Payout is: "+hand.getPlayers(currentPlayer).getBet()*2);					
-		}else if(hand.winner(hand.getPlayers(currentPlayer).getDeck(1),hand.getDealerDeck())==1) {
-			JOptionPane.showMessageDialog(frame,"You lost");
-		}else if(hand.winner(hand.getPlayers(currentPlayer).getDeck(1),hand.getDealerDeck())==2) {
-			JOptionPane.showMessageDialog(frame,"You tied");
-		}
-//		lblDealerHand.setText("Dealer Top Card: " + hand.handPts(hand.getDealerDeck()) + ":  " + hand.printDealerDeck());
-		hand.cleanUp(); 				
-		lblBalance.setText("Balance:" + hand.getPlayers(currentPlayer).getMoney());
-		lblMaxBet.setText("Max Bet: " + hand.getPlayers(currentPlayer).getMoney());
+	//nextHand() resets the board and initializes the next hand
+	private void nextHand() {
+		resetLabels();
 		resetButtons();
-		currentPlayer++;
-		if(currentPlayer>this.numPlayers-1){
+		resetCardSlots();
+		resetPlayerSlots();
+		btnBet.setEnabled(true);
+		hand.initGUI();
+		JOptionPane.showMessageDialog(frame,"Player " + (currentPlayer + 1) + ", place your bet.");
+	}
+	
+	//placeBets() prompts the players to place their bets and 
+	//draws each hand to the board when all players have placed their bets
+	private void placeBets() {
+		if(currentPlayer+1<this.numPlayers) {
+			btnBet.setEnabled(true);
+			currentPlayer++;
+			JOptionPane.showMessageDialog(frame,"Player " + (currentPlayer + 1) + ", place your bet.");
+			
+		}else {
+			currentPlayer=0;
+			drawAllHands();
+			drawDealerHand();
+			btnStand.setEnabled(true);
+			btnHit.setEnabled(true);
+			btnDouble.setEnabled(false);
+			JOptionPane.showMessageDialog(frame,"Player " + (currentPlayer + 1) + "'s turn.");
+		}
+	}
+	
+	//end() prompts each player to play their turn and when all players have played their turn,
+	//displays the final board state and pays out each player
+	private void end() {			
+		if(currentPlayer>=this.numPlayers-1){
+			hand.hitUntil17GUI();
+			drawPlayerHand(currentPlayer+1);
+			drawDealerHand();
 			currentPlayer = 0;
+			for(int i = 0; i<this.numPlayers;i++) {
+				if(hand.winner(hand.getPlayers(currentPlayer).getDeck(1),hand.getDealerDeck())==0) {
+					JOptionPane.showMessageDialog(frame,"Player " + (currentPlayer+1) + " won! Payout is: "+hand.getPlayers(currentPlayer).getBet()*2);					
+				}else if(hand.winner(hand.getPlayers(currentPlayer).getDeck(1),hand.getDealerDeck())==1) {
+					JOptionPane.showMessageDialog(frame,"Player " + (currentPlayer+1) + " lost.");
+				}else if(hand.winner(hand.getPlayers(currentPlayer).getDeck(1),hand.getDealerDeck())==2) {
+					JOptionPane.showMessageDialog(frame,"Player " + (currentPlayer+1) + " tied.");
+				}
+				currentPlayer++;
+			}
+			
+			hand.cleanUp();
+			resetButtons();
+			btnNextHand.setEnabled(true);
+			currentPlayer = 0;
+		}else {
+			lblBalance.setText("Balance:" + hand.getPlayers(currentPlayer).getMoney());
+			lblMaxBet.setText("Max Bet: " + hand.getPlayers(currentPlayer).getMoney());	
+			currentPlayer++;
+			JOptionPane.showMessageDialog(frame,"Player " + (currentPlayer + 1) + "'s turn.");
 		}
 
 	}
