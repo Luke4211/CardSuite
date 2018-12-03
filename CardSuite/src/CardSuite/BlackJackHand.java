@@ -225,7 +225,7 @@ public class BlackJackHand {
 	 * 0 if player wins, 1 if dealer wins, and 2 
 	 * if there is a tie.
 	 */
-	private int winner(Deck player, Deck dealer) {
+	public int winner(Deck player, Deck dealer) {
 		int playerPts = handPts(player);
 		int dealerPts = handPts(dealer);
 		if(dealer.size() == 2 && dealerPts == 21) {
@@ -263,7 +263,7 @@ public class BlackJackHand {
 	 * value exceeds 21, if so it returns true,
 	 * otherwise returns false 
 	 */
-	private boolean bust(Deck hand) {
+	public boolean bust(Deck hand) {
 		if(handPts(hand) > 21) {
 			return true;
 		} else {
@@ -345,7 +345,7 @@ public class BlackJackHand {
 	 *  house deck and adds it into the passed
 	 *  deck
 	 */
-	private void hit(int player, int deck) {
+	public void hit(int player, int deck) {
 		Card card = this.drawCard();
 		this.players[player].addCard(deck, card);
 		this.updateHiLo();
@@ -459,7 +459,7 @@ public class BlackJackHand {
 	 * canSplit() checks if the inputted deck
 	 * can be split
 	 */
-	private boolean canSplit(Deck deck) {
+	public boolean canSplit(Deck deck) {
 		if(deck.size() == 2) {
 			Card card1 = deck.getCard(0);
 			Card card2 = deck.getCard(1);
@@ -474,7 +474,7 @@ public class BlackJackHand {
 	/*
 	 * handPts() calculates the point value of a hand 
 	 */
-	private int handPts(Deck hand) {
+	public int handPts(Deck hand) {
 		int sum = 0;
 		boolean val10 = false;
 		ArrayList<Card> aces = new ArrayList<Card>();
@@ -524,7 +524,7 @@ public class BlackJackHand {
 	 * then updates the screen. It then adds all
 	 * the decks together into the house deck.
 	 */
-	private void cleanUp() {
+	public void cleanUp() {
 		this.printState();
 		for(int i = 0; i < this.numPlayers; i++) {
 			
@@ -581,7 +581,7 @@ public class BlackJackHand {
 		return allFin;
 	}
 	
-	private Card drawCard() {
+	public Card drawCard() {
 		Card topCard;
 		try {
 			topCard = this.house.top();

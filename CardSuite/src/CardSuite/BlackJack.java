@@ -51,6 +51,18 @@ public class BlackJack {
 		this.addPlayers();		
 	}
 	
+	public long getHouseMoney() {
+		return this.houseMoney;
+	}	
+	
+	public long getPlayerMoney() {
+		return playerMoney;
+	}
+
+	public int getNumHands() {
+		return numHands;
+	}
+
 	public int getMinBet() {
 		return minBet;
 	}
