@@ -1,13 +1,13 @@
 package CardSuite;
 
 import java.util.ArrayList;
-/*
+/**
  * A class which calculates the mathematically
  * best choice for each hand and dealer top card.
  * Written by Lucas Gorski
  */
 public class BlackJackBasicStrategy {
-	/*
+	/**
 	 * These decision tables give the mathematically
 	 * best move depending on the player's hand and
 	 * dealer's top card. Each row represents
@@ -25,7 +25,6 @@ public class BlackJackBasicStrategy {
 	 * rs = surrender if allowed, otherwise stand *
 	 * ********************************************
 	 */
-	
 	private final String[][] hardDecisionTable = {
         /* Hands:                         2     3     4     5     6     7     8     9     10    A  */
 	/*4-7 */			{"h",  "h",  "h",  "h",  "h",  "h",  "h",  "h",  "h",  "h"  },
@@ -41,10 +40,10 @@ public class BlackJackBasicStrategy {
 	/* 17 */			{"s",  "s",  "s",  "s",  "s",   "s",  "s",  "s",  "s",  "rs"},
 	/* 18+*/			{"s",  "s",  "s",  "s",  "s",   "s",  "s",  "s",  "s",  "s" },	
 	};
-	/*
+	
+	/**
 	 * 
 	 */
-	
 	private final String[][] softDecisionTable = {
 	/* Hands:                         2     3     4     5     6     7     8     9     10    A  */
 	/* 13 */			{"h" , "h" , "dh", "dh", "dh", "h",  "h",  "h",  "h",  "h" },
@@ -73,7 +72,7 @@ public class BlackJackBasicStrategy {
 		
 	}
 	
-	/*
+	/**
 	 * getDecision() returns the optimal decision 
 	 * based on the player's hand and dealer's top
 	 * card
@@ -100,7 +99,7 @@ public class BlackJackBasicStrategy {
 		}
 		
 	}
-	/*
+	/**
 	 * handPts() calculates the point value of the passed hand
 	 */
 	public int handPts(Deck hand) {
@@ -129,7 +128,7 @@ public class BlackJackBasicStrategy {
 		}
 		return sum;
 	}
-	/*
+	/**
 	 * isSoft(deck) returns true if the hand contains
 	 * and ace valued and 10, and false otherwise.
 	 */
@@ -145,7 +144,7 @@ public class BlackJackBasicStrategy {
 			return false;
 		}
 	}
-	/*
+	/**
 	 * isSplit(deck) returns true if the hand contains
 	 * only 2 cards which have the same value, and 
 	 * false otherwise.
@@ -163,7 +162,7 @@ public class BlackJackBasicStrategy {
 		
 		return false;
 	}
-	/*
+	/**
 	 * getHardRow(int) returns the row 
 	 * number for the decision table for
 	 * a hard hand (no ace valued at 10)
@@ -176,7 +175,7 @@ public class BlackJackBasicStrategy {
 		}
 		return (pts - 7);
 	}
-	/*
+	/**
 	 * getSoftRow(int) returns the row
 	 * number for the decision table for
 	 * a soft hand
@@ -188,7 +187,7 @@ public class BlackJackBasicStrategy {
 		
 		return (pts - 13);
 	}
-	/*
+	/**
 	 * getSplitRow(card) returns the row
 	 * number for the decision table for
 	 * a split hand.
@@ -203,7 +202,7 @@ public class BlackJackBasicStrategy {
 		return 7;
 	}
 	
-	/*
+	/**
 	 * getCol(Card) returns the column
 	 * number for the given card.
 	 */

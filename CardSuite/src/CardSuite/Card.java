@@ -13,6 +13,10 @@ public class Card {
 		this.img = img;		
 	}
 	
+	/**
+	 * Gives info on the card.
+	 * @return String. The value and suit of the card.
+	 */
 	public String getInfo() {
 		String name;
 		if(this.value == 1) {
@@ -57,6 +61,10 @@ public class Card {
 		return (name + " of " + suit);
 	}
 	
+	/**
+	 * Getter for the card's value
+	 * @return value as an int
+	 */
 	public int getVal() {
 		return this.value;
 	}
