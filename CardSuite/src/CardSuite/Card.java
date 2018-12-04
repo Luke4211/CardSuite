@@ -7,6 +7,13 @@ public class Card {
 	private String suit;
 	private ImageIcon img;
 	
+	/**
+	 * A playing card.
+	 * 
+	 * @param int val - the value of the card
+	 * @param String suit - Diamonds, Clubs, Spades, Hearts
+	 * @param ImageIcon img - image file for the card
+	 */
 	public Card(int val, String suit, ImageIcon img) {
 		this.value = val;
 		this.suit = suit;
@@ -69,6 +76,10 @@ public class Card {
 		return this.value;
 	}
 	
+	/**
+	 * Face cards in BlackJack are valued at 10
+	 * @return value as an int, adjusted for BlackJack
+	 */
 	public int getBlackJackVal() {
 		if(this.value == 1) {
 			return 1;

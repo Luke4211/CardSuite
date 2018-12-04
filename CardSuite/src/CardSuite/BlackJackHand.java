@@ -1,7 +1,7 @@
 package CardSuite;
 import java.util.ArrayList;
 import java.util.Scanner;
-/*
+/**
  * A class which contains the logic for a
  * hand of blackjack
  */
@@ -25,7 +25,7 @@ public class BlackJackHand {
 	private Card showCard;
 	private Scanner scnr;
 	
-	/*
+	/**
 	 * Basic constructor, initializes instance variables
 	 * to the values contained in the inputted array
 	 */
@@ -51,9 +51,9 @@ public class BlackJackHand {
 		
 	}
 	
-	/*
-	 * The hand() method contains main loop of each hand. After dealing the 
-	 * initial cards and taking bets, the player can hit, stand, 
+	/**
+	 * The hand() method contains main loop of each hand.
+	 * After dealing the initial cards and taking bets, the player can hit, stand, 
 	 * split* or double down* until he either busts or stands. If he busts, he 
 	 * loses the hand. If he stands, the dealer must hit until their hand value is 
 	 * at least 17. Once the hand value equals or is between 17 and 21 inclusive,
@@ -123,21 +123,23 @@ public class BlackJackHand {
 	}
 
 	
-	/*
+	/**
 	 * getHouse() returns the house deck.
+	 * @return Deck
 	 */
 	public Deck getHouse() {
 		return this.house;
 	}
 	
-	/*
+	/**
 	 * getDiscard() returns the discard deck
+	 * @return Deck
 	 */
 	public Deck getDiscard() {
 		return this.discard;
 	}
 	
-	/*
+	/**
 	 * getMoney() returns an array containing
 	 * the player and house money amounts.
 	 */
@@ -147,7 +149,7 @@ public class BlackJackHand {
 	}
 	
 	
-	/*
+	/**
 	 * getPlayers() returns the array of 
 	 * players in the game
 	 */
@@ -155,7 +157,7 @@ public class BlackJackHand {
 		return this.players;
 	}
 	
-	/*
+	/**
 	 * initialize() shuffles the deck, then deals the
 	 * initial cards to the table and collects the bet
 	 * placed by the player.
@@ -180,13 +182,12 @@ public class BlackJackHand {
 		
 	}
 	
-	/*
+	/**
 	 * soft17() returns true if the dealer's
 	 * hand is a soft 17. A soft 17 means that the dealer 
 	 * has a hand whose value is 17 when he has one ace 
 	 * valued at 10. If the dealer hits and goes over 21, the
 	 * ace is reconsidered as low so he doesn't necessarily bust.
-	 
 	 */
 	private boolean soft17() {
 		Deck tempDeck = this.dealer;
@@ -219,7 +220,7 @@ public class BlackJackHand {
 	}
 	
 	
-	/*
+	/**
 	 * winner() determines who wins between a given
 	 * player's deck and the dealers deck. Returns
 	 * 0 if player wins, 1 if dealer wins, and 2 
@@ -258,7 +259,7 @@ public class BlackJackHand {
 		return this.hiLoCounter.getCount();
 	}
 	
-	/*
+	/**
 	 * bust() determines if the inputted deck's
 	 * value exceeds 21, if so it returns true,
 	 * otherwise returns false 
@@ -312,7 +313,7 @@ public class BlackJackHand {
 		}
 	}
 	
-	/*
+	/**
 	 * dealHand() deals one card to each
 	 * deck in play (minus the dealer deck).
 	 */
@@ -328,7 +329,7 @@ public class BlackJackHand {
 		this.updateHiLo();
 	}
 	
-	/*
+	/**
 	 * showDoubles() loops through each player and calls
 	 * the showDouble() method, which adds the double
 	 * card(s) to their main deck.
@@ -339,8 +340,7 @@ public class BlackJackHand {
 		}
 	}
 	
-	/*
-	 *  
+	/**
 	 *  hit() draws one card from the top of the
 	 *  house deck and adds it into the passed
 	 *  deck
@@ -352,7 +352,7 @@ public class BlackJackHand {
 		
 	}
 	
-	/*
+	/**
 	 * hitDealer() draws one card from the house deck
 	 * and adds it to the dealer's deck.
 	 */
@@ -362,7 +362,7 @@ public class BlackJackHand {
 		this.updateHiLo();
 	}
 	
-	/*
+	/**
 	 * This method causes the dealer to repeatedly hit
 	 * until his cards are at least 17 with no high aces.
 	 */
@@ -435,7 +435,7 @@ public class BlackJackHand {
 		}
 		
 	}
-	/*
+	/**
 	 * takeBet() takes a bet from each player
 	 * in the game.
 	 */
@@ -455,7 +455,7 @@ public class BlackJackHand {
 		
 	}
 	
-	/*
+	/**
 	 * canSplit() checks if the inputted deck
 	 * can be split
 	 */
@@ -471,7 +471,7 @@ public class BlackJackHand {
 		return false;
 	}
 	
-	/*
+	/**
 	 * handPts() calculates the point value of a hand 
 	 */
 	public int handPts(Deck hand) {
@@ -507,7 +507,7 @@ public class BlackJackHand {
 		return sum;
 	}
 	
-	/*
+	/**
 	 * flushScreen() prints multiple blank lines 
 	 * in order to clear the screen. For textUI only
 	 */
@@ -518,7 +518,7 @@ public class BlackJackHand {
 		}
 	}
 	
-	/*
+	/**
 	 * cleanUp() pays the pot out to the winner,-
 	 * or redistributes it in case of a tie, and
 	 * then updates the screen. It then adds all
@@ -562,7 +562,7 @@ public class BlackJackHand {
 		this.dealer = new Deck(true);
 	}
 	
-	/*
+	/**
 	 * allFinished() returns true if every player
 	 * is either sitting or standing. Returns false
 	 * otherwise.
@@ -596,7 +596,7 @@ public class BlackJackHand {
 		return topCard;
 	}
 	
-	/*
+	/**
 	 * printPlayerInfo() prints the basic information 
 	 * of each player in game.
 	 */
@@ -620,7 +620,7 @@ public class BlackJackHand {
 		}
 	}
 	
-	/*
+	/**
 	 * printState() prints a primitive textUI for the game
 	 */
 	private void printState() {

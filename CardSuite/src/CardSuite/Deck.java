@@ -26,8 +26,9 @@ import javax.swing.ImageIcon;
 public class Deck {
 	private ArrayList<Card> deck;
 	
-	//card dimensions
+	/**card dimension x*/
 	private int x=70;
+	/**card dimension y*/
 	private int y=110;
 	
 	/**
