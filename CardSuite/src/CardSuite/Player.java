@@ -44,7 +44,11 @@ public class Player {
 		this.insurance = 0;
 	}
 	
-	
+	/**
+	 * Adds a card to the player's deck(s)
+	 * @param deck int - 1 or 2. In case the player split their deck
+	 * @param card Card - the card being added to the deck
+	 */
 	public void addCard(int deck, Card card) {
 		if(deck == 1) {
 			this.deck1.addCard(card);
@@ -53,6 +57,10 @@ public class Player {
 		}
 	}
 	
+	/**
+	 * Sets the player's deck to busted.
+	 * @param deck int - 1 or 2. Which deck to bust, in case the player split their deck
+	 */
 	public void bustPlayer(int deck) {
 		if(deck == 1) {
 			deck1Bust = true;
@@ -63,6 +71,9 @@ public class Player {
 		}
 	}
 	
+	/**
+	 * resets the players values
+	 */
 	public void reset() {
 		this.deck1Bust = false;
 		this.deck2Bust = false;
@@ -78,10 +89,18 @@ public class Player {
 		
 	}
 	
+	/**
+	 * 
+	 * @return boolean value for if the deck is split
+	 */
 	public boolean checkSplit() {
 		return this.isSplit;
 	}
 	
+	/**
+	 * If the players deck(s) are bust, the player is busted.
+	 * @return boolean for if the player is busted.
+	 */
 	public boolean isBusted() {
 		if(this.deck1Bust && this.deck2Bust) {
 			return true;
@@ -90,6 +109,11 @@ public class Player {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param deck int - 1 or 2.
+	 * @return boolean for if the selected deck is bust
+	 */
 	public boolean getBust(int deck) {
 		if(deck == 1) {
 			return this.deck1Bust;
@@ -98,6 +122,10 @@ public class Player {
 		}
 	}
 	
+	/**
+	 * getter for the player's number
+	 * @return int
+	 */
 	public int getNum() {
 		return this.playerNum;
 	}

@@ -108,6 +108,8 @@ public class Deck {
 	/**
 	 * The cutDeck() method cuts the deck by randomly determining a cut position,
 	 * and then reversing the order of the two resulting decks
+	 * 
+	 * @param pNumCuts int - how many times to cut the deck 
 	 */
 	public void cutDeck(int pNumCuts) {
 		Random r = new Random();
@@ -129,6 +131,8 @@ public class Deck {
 	 * The riffle() method riffles the deck. First, it splits the deck into
 	 * two fairly even piles, and then produces a new deck by alternately stacking
 	 * cards from each pile. 
+	 * 
+	 * @param numRiffs int - how many times to riffle the deck 
 	 */
 	public void riffle(int numRiffs) {
 		for(int m = 0; m<numRiffs; m++) {
@@ -176,7 +180,7 @@ public class Deck {
 	}
 	
 	/**
-	 * Prints the deck. Used by the GUI. Uses Card.printCardGUI() method
+	 * Returns the deck as a string.
 	 * @return String
 	 */
 	public String printDeckGUI() {

@@ -364,7 +364,7 @@ public class BlackjackHandGUI {
 		return sum;
 	}
 	
-	/*
+	/**
 	 * cleanUp() pays the pot out to the winner,-
 	 * or redistributes it in case of a tie, and
 	 * then updates the screen. It then adds all

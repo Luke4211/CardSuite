@@ -14,6 +14,16 @@ import CardSuite.Deck;
 
 class DeckTest {
 	
+	//genDeck()
+	
+	@Test
+	void testGenDeck() {
+		Deck d = new Deck(false); //calls genDeck
+		System.out.println("genDeck()\n" + d.getDeck().toString() + "\ngenDeck()");
+		assertEquals(d.size(), 52);
+		//assertEquals(d.getDeck().toString(),);
+	}
+	
 	//Deck()
 	
 	@Test
@@ -87,27 +97,41 @@ class DeckTest {
 
 	@Test
 	void testCutDeck() {
-		fail("Not yet implemented");
+		Deck d1 = new Deck(false);
+		Deck d2 = new Deck(false);
+		d2.cutDeck(7);
+		assertNotEquals(d2.getDeck().toString(), d1.getDeck().toString());
 	}
 
 	@Test
 	void testRiffle() {
-		fail("Not yet implemented");
+		Deck d1 = new Deck(false);
+		Deck d2 = new Deck(false);
+		d2.cutDeck(7);
+		assertNotEquals(d2.getDeck().toString(), d1.getDeck().toString());
 	}
 
 	@Test
 	void testPrintDeck() {
-		fail("Not yet implemented");
+		Deck d1 = new Deck(false);
+		System.out.println("printDeck()\n");
+		d1.printDeck();
+		System.out.println("printDeck()\n");
 	}
 
 	@Test
 	void testPrintDeckGUI() {
-		fail("Not yet implemented");
+		Deck d1 = new Deck(true);
+		d1.addCard(new Card(1,"Clubs", new ImageIcon(Deck.class.getResource("/resources/images/1 of Clubs.jpg")) ));
+		d1.addCard(new Card(2,"Diamonds", new ImageIcon(Deck.class.getResource("/resources/images/2 of Diamonds.jpg")) ));
+		d1.addCard(new Card(13,"Spades", new ImageIcon(Deck.class.getResource("/resources/images/13 of Spades.jpg")) ));
+		d1.addCard(new Card(10,"Hearts", new ImageIcon(Deck.class.getResource("/resources/images/10 of Hearts.jpg")) ));
+		assertEquals(" 10 of Hearts King of Spades 2 of Diamonds Ace of Clubs", d1.printDeckGUI());
 	}
 
 	@Test
 	void testResizeImage() {
-		fail("Not yet implemented");
+		//This is a GUI method.
 	}
 
 }

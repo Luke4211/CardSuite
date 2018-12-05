@@ -685,25 +685,25 @@ public class GUI extends JPanel{
     	case 1:
     		for(int i=0;i<hand.getPlayers(0).getDeck(1).size();i++){
         		playerOneSlot[i].setIcon(hand.getPlayers(0).getDeck(1).getCard(i).getImg());
-        		lblHandOne.setText("Player 1 Hand 1 | Value: " + hand.handPts(hand.getPlayers(0).getDeck(1)));
+        		lblHandOne.setText("Player 1 $: "+ hand.getPlayers(0).getMoney()+" Hand 1 | Value: " + hand.handPts(hand.getPlayers(0).getDeck(1)));
         	}
     		break;
     	case 2:
     		for(int i=0;i<hand.getPlayers(1).getDeck(1).size();i++){
         		playerTwoSlot[i].setIcon(hand.getPlayers(1).getDeck(1).getCard(i).getImg());
-        		lblHandTwo.setText("Player 2 Hand 1 | Value: " + hand.handPts(hand.getPlayers(1).getDeck(1)));
+        		lblHandTwo.setText("Player 2 $: "+ hand.getPlayers(1).getMoney()+" Hand 1 | Value: " + hand.handPts(hand.getPlayers(1).getDeck(1)));
         	}
     		break;
     	case 3:
     		for(int i=0;i<hand.getPlayers(2).getDeck(1).size();i++){
         		playerThreeSlot[i].setIcon(hand.getPlayers(2).getDeck(1).getCard(i).getImg());
-        		lblHandThree.setText("Player 3 Hand 1 | Value: " + hand.handPts(hand.getPlayers(2).getDeck(1)));
+        		lblHandThree.setText("Player 3 $: "+ hand.getPlayers(2).getMoney()+" Hand 1 | Value: " + hand.handPts(hand.getPlayers(2).getDeck(1)));
         	}
     		break;
     	case 4:
     		for(int i=0;i<hand.getPlayers(3).getDeck(1).size();i++){
         		playerFourSlot[i].setIcon(hand.getPlayers(3).getDeck(1).getCard(i).getImg());
-        		lblHandFour.setText("Player 4 Hand 1 | Value: " + hand.handPts(hand.getPlayers(3).getDeck(1)));
+        		lblHandFour.setText("Player 4 $: "+ hand.getPlayers(3).getMoney()+" Hand 1 | Value: " + hand.handPts(hand.getPlayers(3).getDeck(1)));
         	}
     		break;
     	}
@@ -827,6 +827,9 @@ public class GUI extends JPanel{
 		if(currentPlayer+1<this.numPlayers) {
 			btnBet.setEnabled(true);
 			currentPlayer++;
+			slider.setMaximum((int)(hand.getPlayers(currentPlayer).getMoney())); //Nolan bet edit
+			lblMaxBet.setText("Max Bet: " + hand.getPlayers(currentPlayer).getMoney()); //also this
+			lblBalance.setText("Balance:" + hand.getPlayers(currentPlayer).getMoney());				
 			JOptionPane.showMessageDialog(frame,"Player " + (currentPlayer + 1) + ", place your bet.");
 			
 		}else {
@@ -836,6 +839,7 @@ public class GUI extends JPanel{
 			btnStand.setEnabled(true);
 			btnHit.setEnabled(true);
 			btnDouble.setEnabled(false);
+			lblBalance.setText("Balance:" + hand.getPlayers(currentPlayer).getMoney());				
 			JOptionPane.showMessageDialog(frame,"Player " + (currentPlayer + 1) + "'s turn.");
 		}
 	}
@@ -849,6 +853,7 @@ public class GUI extends JPanel{
 			drawDealerHand();
 			currentPlayer = 0;
 			for(int i = 0; i<this.numPlayers;i++) {
+				drawPlayerHand(i);//Nolan Edit
 				if(hand.winner(hand.getPlayers(currentPlayer).getDeck(1),hand.getDealerDeck())==0) {
 					JOptionPane.showMessageDialog(frame,"Player " + (currentPlayer+1) + " won! Payout is: "+hand.getPlayers(currentPlayer).getBet()*2);					
 				}else if(hand.winner(hand.getPlayers(currentPlayer).getDeck(1),hand.getDealerDeck())==1) {
@@ -860,13 +865,16 @@ public class GUI extends JPanel{
 			}
 			
 			hand.cleanUp();
+			drawAllHands();//Nolan edit
 			resetButtons();
 			btnNextHand.setEnabled(true);
 			currentPlayer = 0;
 		}else {
+			//Nolan edit. moved currentPlayer++
+			currentPlayer++;
 			lblBalance.setText("Balance:" + hand.getPlayers(currentPlayer).getMoney());
 			lblMaxBet.setText("Max Bet: " + hand.getPlayers(currentPlayer).getMoney());	
-			currentPlayer++;
+			
 			JOptionPane.showMessageDialog(frame,"Player " + (currentPlayer + 1) + "'s turn.");
 		}
 
