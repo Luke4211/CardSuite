@@ -68,7 +68,13 @@ public class BlackJack {
 	}
 	
 	
-	
+	/**
+	 * Array of objects from this black jack game. Array cells respectively contain... 0-the house's deck,
+	 * 1-the houses money, 2-player starting money, 3-discard deck, 4-number of players,
+	 * 5-the number of hands for this game, 6-the array of players, 7-the hiLo int,
+	 * 8-the minimum bet.
+	 * @return Object[]
+	 */
 	public Object[] getInfo() {
 		Object[] rtn = new Object[10];
 		rtn[0] = this.house;
@@ -142,6 +148,13 @@ public class BlackJack {
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	 * Method for testing purposes
+	 */
+	public void setHandCount(int handCount) {
+		this.handCount = handCount;
 	}
 	
 	protected void addPlayers() {
