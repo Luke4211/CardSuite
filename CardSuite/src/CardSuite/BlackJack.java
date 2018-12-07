@@ -17,7 +17,9 @@ public class BlackJack {
 	protected boolean isSim;
 	
 	
-	
+	/**
+	 * BlackJack Constructor
+	 */
 	public BlackJack() {
 		this.run = true;
 		this.house = new Deck(false);
@@ -34,6 +36,14 @@ public class BlackJack {
 		this.addPlayers();
 	}
 	
+	/**
+	 * BlackJack Constructor
+	 * @param dealerMoney
+	 * @param playerMoney - starting money
+	 * @param numPlayers
+	 * @param numHands - total number of hands
+	 * @param minBet
+	 */
 	public BlackJack(long dealerMoney, long playerMoney, int numPlayers, int numHands, int minBet) {
 		this.run = true;
 		this.house = new Deck(false);
@@ -94,7 +104,9 @@ public class BlackJack {
 	}
 	
 	
-	
+	/**
+	 * The main loop for the game
+	 */
 	public void game() {
 		while(this.run) {
 			BlackJackHand hand = new BlackJackHand(this.getInfo()); 
@@ -157,6 +169,9 @@ public class BlackJack {
 		this.handCount = handCount;
 	}
 	
+	/**
+	 * Puts players in the game based on numPlayers
+	 */
 	protected void addPlayers() {
 		for(int i = 0; i < this.numPlayers; i++) {
 			Player newPlayer = new Player(i+1, this.playerMoney);

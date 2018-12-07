@@ -168,6 +168,9 @@ public class Player {
 		return this.playerNum;
 	}
 	
+	/**
+	 * adds the doubled down cards to the deck.
+	 */
 	public void showDouble() {
 		if(this.isDoubled1) {
 			this.deck1.addCard(doubleCard1);
@@ -178,6 +181,10 @@ public class Player {
 		
 	}
 	
+	/**
+	 * splits the given cards into two decks, and takes another bet from the player as the splitBet.
+	 * @param cards - 2 that are going to be split
+	 */
 	public void split(Card[] cards) {
 		this.deck2 = new Deck(true);
 		this.splitBet = this.bet;
@@ -193,6 +200,11 @@ public class Player {
 		return this.numDecks;
 	}
 	
+	/**
+	 * doubles down on the selected card in the selected deck. Doubles the player's bet, and sets the deck to stand.
+	 * @param card to doublke down on.
+	 * @param deck int - 1 or 2
+	 */
 	public void doubleDown(Card card, int deck) {
 		if(deck == 1) {
 			this.doubleCard1 = card;
@@ -298,7 +310,9 @@ public class Player {
 		}
 	}
 	
-	
+	/**
+	 * insures half of the players bet and takes it out of their money.
+	 */
 	public void insure() {
 		this.insured = true;
 		this.insurance = this.bet/2;
@@ -306,6 +320,11 @@ public class Player {
 		
 	}
 	
+	/**
+	 * If the player wins, they get their insurance and bet back. if they lose the dealer takes they insurance.
+	 * @param payOut boolean - true if the player wins
+	 * @return int - the amount of money the player insured
+	 */
 	public int claimInsurance(boolean payOut) {
 		if(payOut) {
 			this.money += 3*this.insurance;
@@ -331,6 +350,11 @@ public class Player {
 		return this.insured;
 	}
 	
+	/**
+	 * Tells you if the selected deck is standing or not.
+	 * @param deck int - 1 or 2
+	 * @return boolean
+	 */
 	public boolean getStanding(int deck) {
 		if(deck == 1) {
 			return this.standing1;
@@ -338,7 +362,11 @@ public class Player {
 		
 		return this.standing2;
 	}
-	
+	 /**
+	  * sets the selected deck to stand
+	  * @param set boolean
+	  * @param deck int - 1 or 2
+	  */
 	public void setStand(boolean set, int deck) {
 		if(deck == 1) {
 			this.standing1 = set;
@@ -350,11 +378,19 @@ public class Player {
 		
 	}
 	
+	/**
+	 * makes a new bet and takes that money from the player
+	 * @param bet2 long
+	 */
 	public void bet(long bet2) {
 		this.bet += bet2;
 		this.money -= this.bet;
 	}
 	
+	/**
+	 * Adds bet and splitbet together
+	 * @return this.bet + this.splitBet
+	 */
 	public long getBet() {
 		return this.bet + this.splitBet;
 	}
