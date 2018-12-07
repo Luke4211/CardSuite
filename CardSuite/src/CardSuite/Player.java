@@ -367,7 +367,11 @@ public class Player {
 		this.money += l;
 	}
 	
-	
+	/**
+	 * returns the bet or the splitbet
+	 * @param index int - 1 for bet, 2 for splitbet
+	 * @return bet or splitbet as a long
+	 */
 	public long claimBet(int index) {
 		long rtn = 0;
 		if(index == 1) {
@@ -380,6 +384,10 @@ public class Player {
 		return rtn;	
 	}
 	
+	/**
+	 * Creates or overwrites the selected deck with an empty one
+	 * @param index int - deck 1 or 2
+	 */
 	public void newDeck(int index) {
 		if(index == 1) {
 			this.deck1 = new Deck(true);

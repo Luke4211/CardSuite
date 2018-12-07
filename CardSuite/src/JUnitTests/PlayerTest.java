@@ -55,7 +55,10 @@ class PlayerTest {
 		cards[0] = new Card(2,"Clubs", new ImageIcon(Deck.class.getResource("/resources/images/1 of Clubs.jpg")));
 		cards[1] = new Card(2,"Hearts", new ImageIcon(Deck.class.getResource("/resources/images/1 of Clubs.jpg")));
 		p.split(cards);
+		assertEquals(100, p.claimBet(2)); //claim splitbet
+		assertEquals(100, p.claimBet(1));
 		assertEquals(2, p.getNumDecks());
+		assertEquals(true, p.checkSplit());
 		assertEquals("[2 of Clubs, Ace of Clubs]", p.getDeck(1).getDeck().toString());
 		assertEquals("[2 of Hearts, Ace of Clubs]", p.getDeck(2).getDeck().toString());
 	}
@@ -72,6 +75,7 @@ class PlayerTest {
 		p.split(cards);
 		p.doubleDown(p.getDeck(1).getCard(0), 1);
 		p.doubleDown(p.getDeck(2).getCard(0), 2);
+		p.showDouble();
 		assertEquals(400, p.getBet());
 		assertEquals(600, p.getMoney());
 	}
@@ -107,11 +111,6 @@ class PlayerTest {
 	}
 
 	@Test
-	void testGetInsurance() {
-		fail("Not yet implemented");
-	}
-
-	@Test
 	void testAddMoney() {
 		Player p = new Player(1,1000);
 		p.addMoney(100);
@@ -135,18 +134,14 @@ class PlayerTest {
 	}
 
 	@Test
-	void testClaimBet() {
-		fail("Not yet implemented");
+	void testTheRest() {
+		Player t = new Player(1, 1000, true, true, 2, false, false, false, false, false, false, false, false);
+		Player t1 = new Player(2, 1000, true, true, 2, false, false, false, false, true, true, true, true);
+		assertEquals(2, t1.getNum());
+		t.newDeck(1);
+		t.newDeck(2);
+		assertEquals(null, t.getDeck(3));
+		assertEquals(null, t.getDeck(1).getCard(0));
+	
 	}
-
-	@Test
-	void testNewDeck() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testGetDeck() {
-		fail("Not yet implemented");
-	}
-
 }
