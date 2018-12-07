@@ -45,6 +45,44 @@ public class Player {
 	}
 	
 	/**
+	 * Player constructor for testing purposes
+	 * 
+	 * @param num
+	 * @param money
+	 * @param deck1 true for empty
+	 * @param deck2 true for empty
+	 * @param numDecks 
+	 * @param deck1Bust
+	 * @param deck2Bust
+	 * @param standing1
+	 * @param standing2
+	 * @param isDoubled1
+	 * @param isDoubled2
+	 * @param isSplit
+	 * @param insured
+	 */
+	public Player(int num, long money, boolean deck1, boolean deck2, int numDecks,
+			boolean deck1Bust, boolean deck2Bust, boolean standing1, boolean standing2,
+			boolean isDoubled1, boolean isDoubled2, boolean isSplit, boolean insured) {
+	this.deck1 = new Deck(deck1);
+	this.deck2 = new Deck(deck2);
+	this.numDecks = numDecks;
+	this.playerNum = num;
+	this.money = money;
+	this.deck1Bust = deck1Bust;
+	this.deck2Bust = deck2Bust;
+	this.standing1 = standing1;
+	this.standing2 = standing2;
+	this.isDoubled1 = isDoubled1;
+	this.isDoubled2 = isDoubled2;
+	this.isSplit = isSplit;
+	this.insured = insured;
+	this.bet = 0;
+	this.splitBet = 0;
+	this.insurance = 0;
+}
+	
+	/**
 	 * Adds a card to the player's deck(s)
 	 * @param deck int - 1 or 2. In case the player split their deck
 	 * @param card Card - the card being added to the deck
@@ -329,6 +367,7 @@ public class Player {
 		this.money += l;
 	}
 	
+	
 	public long claimBet(int index) {
 		long rtn = 0;
 		if(index == 1) {
@@ -349,6 +388,11 @@ public class Player {
 		}
 	}
 	
+	/**
+	 * Return the selected deck of this player
+	 * @param deck int - 1 or 2
+	 * @return Deck
+	 */
 	public Deck getDeck(int deck) {
 		Deck rtn;
 		if(deck == 1) {
