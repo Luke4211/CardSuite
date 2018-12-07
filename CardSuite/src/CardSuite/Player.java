@@ -44,7 +44,49 @@ public class Player {
 		this.insurance = 0;
 	}
 	
+	/**
+	 * Player constructor for testing purposes
+	 * 
+	 * @param num
+	 * @param money
+	 * @param deck1 true for empty
+	 * @param deck2 true for empty
+	 * @param numDecks 
+	 * @param deck1Bust
+	 * @param deck2Bust
+	 * @param standing1
+	 * @param standing2
+	 * @param isDoubled1
+	 * @param isDoubled2
+	 * @param isSplit
+	 * @param insured
+	 */
+	public Player(int num, long money, boolean deck1, boolean deck2, int numDecks,
+			boolean deck1Bust, boolean deck2Bust, boolean standing1, boolean standing2,
+			boolean isDoubled1, boolean isDoubled2, boolean isSplit, boolean insured) {
+	this.deck1 = new Deck(deck1);
+	this.deck2 = new Deck(deck2);
+	this.numDecks = numDecks;
+	this.playerNum = num;
+	this.money = money;
+	this.deck1Bust = deck1Bust;
+	this.deck2Bust = deck2Bust;
+	this.standing1 = standing1;
+	this.standing2 = standing2;
+	this.isDoubled1 = isDoubled1;
+	this.isDoubled2 = isDoubled2;
+	this.isSplit = isSplit;
+	this.insured = insured;
+	this.bet = 0;
+	this.splitBet = 0;
+	this.insurance = 0;
+}
 	
+	/**
+	 * Adds a card to the player's deck(s)
+	 * @param deck int - 1 or 2. In case the player split their deck
+	 * @param card Card - the card being added to the deck
+	 */
 	public void addCard(int deck, Card card) {
 		if(deck == 1) {
 			this.deck1.addCard(card);
@@ -53,6 +95,10 @@ public class Player {
 		}
 	}
 	
+	/**
+	 * Sets the player's deck to busted.
+	 * @param deck int - 1 or 2. Which deck to bust, in case the player split their deck
+	 */
 	public void bustPlayer(int deck) {
 		if(deck == 1) {
 			deck1Bust = true;
@@ -63,6 +109,9 @@ public class Player {
 		}
 	}
 	
+	/**
+	 * resets the players values
+	 */
 	public void reset() {
 		this.deck1Bust = false;
 		this.deck2Bust = false;
@@ -78,10 +127,18 @@ public class Player {
 		
 	}
 	
+	/**
+	 * 
+	 * @return boolean value for if the deck is split
+	 */
 	public boolean checkSplit() {
 		return this.isSplit;
 	}
 	
+	/**
+	 * If the players deck(s) are bust, the player is busted.
+	 * @return boolean for if the player is busted.
+	 */
 	public boolean isBusted() {
 		if(this.deck1Bust && this.deck2Bust) {
 			return true;
@@ -90,6 +147,11 @@ public class Player {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param deck int - 1 or 2.
+	 * @return boolean for if the selected deck is bust
+	 */
 	public boolean getBust(int deck) {
 		if(deck == 1) {
 			return this.deck1Bust;
@@ -98,10 +160,17 @@ public class Player {
 		}
 	}
 	
+	/**
+	 * getter for the player's number
+	 * @return int
+	 */
 	public int getNum() {
 		return this.playerNum;
 	}
 	
+	/**
+	 * adds the doubled down cards to the deck.
+	 */
 	public void showDouble() {
 		if(this.isDoubled1) {
 			this.deck1.addCard(doubleCard1);
@@ -112,6 +181,10 @@ public class Player {
 		
 	}
 	
+	/**
+	 * splits the given cards into two decks, and takes another bet from the player as the splitBet.
+	 * @param cards - 2 that are going to be split
+	 */
 	public void split(Card[] cards) {
 		this.deck2 = new Deck(true);
 		this.splitBet = this.bet;
@@ -127,6 +200,11 @@ public class Player {
 		return this.numDecks;
 	}
 	
+	/**
+	 * doubles down on the selected card in the selected deck. Doubles the player's bet, and sets the deck to stand.
+	 * @param card to doublke down on.
+	 * @param deck int - 1 or 2
+	 */
 	public void doubleDown(Card card, int deck) {
 		if(deck == 1) {
 			this.doubleCard1 = card;
@@ -234,7 +312,9 @@ public class Player {
 		}
 	}
 	
-	
+	/**
+	 * insures half of the players bet and takes it out of their money.
+	 */
 	public void insure() {
 		this.insured = true;
 		this.insurance = this.bet/2;
@@ -242,6 +322,11 @@ public class Player {
 		
 	}
 	
+	/**
+	 * If the player wins, they get their insurance and bet back. if they lose the dealer takes they insurance.
+	 * @param payOut boolean - true if the player wins
+	 * @return int - the amount of money the player insured
+	 */
 	public int claimInsurance(boolean payOut) {
 		if(payOut) {
 			this.money += 3*this.insurance;
@@ -267,6 +352,11 @@ public class Player {
 		return this.insured;
 	}
 	
+	/**
+	 * Tells you if the selected deck is standing or not.
+	 * @param deck int - 1 or 2
+	 * @return boolean
+	 */
 	public boolean getStanding(int deck) {
 		if(deck == 1) {
 			return this.standing1;
@@ -274,7 +364,11 @@ public class Player {
 		
 		return this.standing2;
 	}
-	
+	 /**
+	  * sets the selected deck to stand
+	  * @param set boolean
+	  * @param deck int - 1 or 2
+	  */
 	public void setStand(boolean set, int deck) {
 		if(deck == 1) {
 			this.standing1 = set;
@@ -286,11 +380,19 @@ public class Player {
 		
 	}
 	
+	/**
+	 * makes a new bet and takes that money from the player
+	 * @param bet2 long
+	 */
 	public void bet(long bet2) {
 		this.bet += bet2;
 		this.money -= this.bet;
 	}
 	
+	/**
+	 * Adds bet and splitbet together
+	 * @return this.bet + this.splitBet
+	 */
 	public long getBet() {
 		return this.bet + this.splitBet;
 	}
@@ -303,6 +405,11 @@ public class Player {
 		this.money += l;
 	}
 	
+	/**
+	 * returns the bet or the splitbet
+	 * @param index int - 1 for bet, 2 for splitbet
+	 * @return bet or splitbet as a long
+	 */
 	public long claimBet(int index) {
 		long rtn = 0;
 		if(index == 1) {
@@ -315,6 +422,10 @@ public class Player {
 		return rtn;	
 	}
 	
+	/**
+	 * Creates or overwrites the selected deck with an empty one
+	 * @param index int - deck 1 or 2
+	 */
 	public void newDeck(int index) {
 		if(index == 1) {
 			this.deck1 = new Deck(true);
@@ -323,6 +434,11 @@ public class Player {
 		}
 	}
 	
+	/**
+	 * Return the selected deck of this player
+	 * @param deck int - 1 or 2
+	 * @return Deck
+	 */
 	public Deck getDeck(int deck) {
 		Deck rtn;
 		if(deck == 1) {

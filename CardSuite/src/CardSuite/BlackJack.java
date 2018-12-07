@@ -17,6 +17,33 @@ public class BlackJack {
 	protected boolean isSim;
 	
 	
+	/**
+	 * BlackJack Constructor
+	 */
+	public BlackJack() {
+		this.run = true;
+		this.house = new Deck(false);
+		this.discard = new Deck(true);
+		this.houseMoney = 1000000;
+		this.playerMoney = 5000;
+		this.numHands = 100;
+		this.minBet = 500;
+		this.numPlayers = 1;
+		this.handCount = 0;
+		this.house.shuffle();
+		this.players = new Player[this.numPlayers];
+		this.hiLo = 0;
+		this.addPlayers();
+	}
+	
+	/**
+	 * BlackJack Constructor
+	 * @param dealerMoney
+	 * @param playerMoney - starting money
+	 * @param numPlayers
+	 * @param numHands - total number of hands
+	 * @param minBet
+	 */
 	public BlackJack(long dealerMoney, long playerMoney, int numPlayers, int numHands, int minBet) {
 		this.run = true;
 		this.house = new Deck(false);
@@ -31,14 +58,33 @@ public class BlackJack {
 		this.house.shuffle();
 		this.players = new Player[this.numPlayers];
 		this.hiLo = 0;
-		this.addPlayers();
-		
-		
-		
+		this.addPlayers();		
+	}
+	
+	public long getHouseMoney() {
+		return this.houseMoney;
+	}	
+	
+	public long getPlayerMoney() {
+		return playerMoney;
+	}
+
+	public int getNumHands() {
+		return numHands;
+	}
+
+	public int getMinBet() {
+		return minBet;
 	}
 	
 	
-	
+	/**
+	 * Array of objects from this black jack game. Array cells respectively contain... 0-the house's deck,
+	 * 1-the houses money, 2-player starting money, 3-discard deck, 4-number of players,
+	 * 5-the number of hands for this game, 6-the array of players, 7-the hiLo int,
+	 * 8-the minimum bet.
+	 * @return Object[]
+	 */
 	public Object[] getInfo() {
 		Object[] rtn = new Object[10];
 		rtn[0] = this.house;
@@ -58,7 +104,9 @@ public class BlackJack {
 	}
 	
 	
-	
+	/**
+	 * The main loop for the game
+	 */
 	public void game() {
 		while(this.run) {
 			BlackJackHand hand = new BlackJackHand(this.getInfo()); 
@@ -114,6 +162,16 @@ public class BlackJack {
 		}
 	}
 	
+	/**
+	 * Method for testing purposes
+	 */
+	public void setHandCount(int handCount) {
+		this.handCount = handCount;
+	}
+	
+	/**
+	 * Puts players in the game based on numPlayers
+	 */
 	protected void addPlayers() {
 		for(int i = 0; i < this.numPlayers; i++) {
 			Player newPlayer = new Player(i+1, this.playerMoney);
